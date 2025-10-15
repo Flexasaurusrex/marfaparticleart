@@ -47,8 +47,8 @@ export default function Home() {
   const { mutateAsync: upload } = useStorageUpload();
   const signer = useSigner();
 
-  // Custom contract configuration - UPDATE THIS AFTER DEPLOYING NEW CONTRACT
-  const contractAddress = "0xYOUR_NEW_CONTRACT_ADDRESS_HERE";
+  // Marfa Particle Art Contract - Deployed on Base
+  const contractAddress = "0xe2184682de09f774486EaA59DA0Eb14Cf133f875";
   const contractABI = [
     "function mint(string memory uri) public payable returns (uint256)",
     "function totalSupply() public view returns (uint256)",
