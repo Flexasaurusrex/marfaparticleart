@@ -1682,11 +1682,15 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://artmarfa.xyz" />
         <meta property="og:title" content="Marfa Particle Art - Desert NFT Collection" />
         <meta property="og:description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:image" content="https://artmarfa.xyz/social.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://artmarfa.xyz" />
         <meta name="twitter:title" content="Marfa Particle Art - Desert NFT Collection" />
         <meta name="twitter:description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
+        <meta name="twitter:image" content="https://artmarfa.xyz/social.png" />
       </Head>
       
       <div style={{ 
