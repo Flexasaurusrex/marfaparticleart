@@ -157,8 +157,9 @@ export default function Home() {
     canvas.height = 600;
 
     const figurePath = [];
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    // Position particles in upper left for Beeple Astronaut scene to avoid overlap
+    const centerX = sceneType === 'beeple-astronaut' ? canvas.width * 0.28 : canvas.width / 2;
+    const centerY = sceneType === 'beeple-astronaut' ? canvas.height * 0.28 : canvas.height / 2;
     
     if (shapeType === 'saguaro') {
       // IMPROVED: Tall realistic saguaro with 3 arms at different heights
@@ -495,7 +496,7 @@ export default function Home() {
 
     figurePathRef.current = figurePath;
 
-  }, [shapeType]);
+  }, [shapeType, sceneType]);
 
   useEffect(() => {
     if (figurePathRef.current.length === 0) return;
@@ -1510,7 +1511,8 @@ export default function Home() {
         };
         let isDrawing = false; let mousePos = { x: 0, y: 0 };
         const particles = []; const figurePath = [];
-        const centerX = canvas.width / 2; const centerY = canvas.height / 2;
+        const centerX = config.sceneType === 'beeple-astronaut' ? canvas.width * 0.28 : canvas.width / 2;
+        const centerY = config.sceneType === 'beeple-astronaut' ? canvas.height * 0.28 : canvas.height / 2;
         ${shapeCode}
         ${sceneRenderCode}
         for (let i = 0; i < config.particleCount; i++) {
