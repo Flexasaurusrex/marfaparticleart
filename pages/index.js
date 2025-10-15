@@ -482,6 +482,14 @@ export default function Home() {
           });
         }
       });
+    } else if (shapeType === 'rainbow-thing') {
+      // Rainbow Thing (NOT a Squiggle) - for Art Blocks event 🌈
+      // Definitely not a squiggle. Nope. Totally different.
+      for (let i = 0; i <= 150; i++) {
+        const x = centerX - 200 + i * 2.7;
+        const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
+        figurePath.push({ x, y });
+      }
     }
 
     figurePathRef.current = figurePath;
@@ -497,6 +505,14 @@ export default function Home() {
     for (let i = 0; i < particleCount; i++) {
       const pathIndex = Math.floor((i / particleCount) * figurePath.length);
       const pos = figurePath[pathIndex];
+      
+      // Rainbow gradient for rainbow-thing shape
+      let particleColorOverride = null;
+      if (shapeType === 'rainbow-thing') {
+        const hue = (i / particleCount) * 360; // 0-360 degrees around color wheel
+        particleColorOverride = `hsl(${hue}, 100%, 60%)`;
+      }
+      
       newParticles.push({
         x: pos.x,
         y: pos.y,
@@ -505,7 +521,8 @@ export default function Home() {
         vx: 0,
         vy: 0,
         pathIndex: pathIndex,
-        trail: []
+        trail: [],
+        color: particleColorOverride // Store individual color if rainbow
       });
     }
     
@@ -732,6 +749,68 @@ export default function Home() {
       drawTumbleweed(550, canvas.height * 0.55, 18);
       drawTumbleweed(80, canvas.height * 0.68, 27);
       drawTumbleweed(320, canvas.height * 0.58, 24);
+    } else if (sceneType === 'beeple-astronaut') {
+      // GIANT BEEPLE ASTRONAUT in the desert!
+      // Sky gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#ff6b6b');
+      gradient.addColorStop(0.3, '#ee5a6f');
+      gradient.addColorStop(0.6, '#f4a460');
+      gradient.addColorStop(1, '#d2691e');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Desert floor
+      ctx.fillStyle = '#c19a6b';
+      ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+      
+      // GIANT ASTRONAUT SILHOUETTE
+      const astronautCenterX = canvas.width * 0.7;
+      const astronautBottomY = canvas.height * 0.7;
+      const astronautHeight = 280;
+      const astronautWidth = 140;
+      
+      ctx.fillStyle = '#1a1a1a';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      
+      // Legs
+      ctx.fillRect(astronautCenterX - 35, astronautBottomY - 120, 25, 120);
+      ctx.fillRect(astronautCenterX + 10, astronautBottomY - 120, 25, 120);
+      
+      // Boots
+      ctx.fillRect(astronautCenterX - 40, astronautBottomY - 15, 35, 15);
+      ctx.fillRect(astronautCenterX + 5, astronautBottomY - 15, 35, 15);
+      
+      // Body/Torso
+      ctx.fillRect(astronautCenterX - 50, astronautBottomY - 200, 100, 80);
+      
+      // Arms
+      ctx.fillRect(astronautCenterX - 70, astronautBottomY - 190, 20, 60);
+      ctx.fillRect(astronautCenterX + 50, astronautBottomY - 185, 20, 55);
+      
+      // Chest pack
+      ctx.fillStyle = '#2a2a2a';
+      ctx.fillRect(astronautCenterX - 35, astronautBottomY - 195, 70, 40);
+      
+      // Helmet (large round)
+      ctx.fillStyle = '#1a1a1a';
+      ctx.beginPath();
+      ctx.arc(astronautCenterX, astronautBottomY - 230, 55, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Helmet visor (reflective - lighter)
+      ctx.fillStyle = '#3a3a3a';
+      ctx.beginPath();
+      ctx.arc(astronautCenterX, astronautBottomY - 230, 40, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Visor reflection
+      ctx.fillStyle = '#5a5a5a';
+      ctx.beginPath();
+      ctx.arc(astronautCenterX - 10, astronautBottomY - 240, 15, 0, Math.PI * 2);
+      ctx.fill();
     }
   };
 
@@ -776,7 +855,8 @@ export default function Home() {
             
             if (distance < connectionDistance) {
               const alpha = (1 - distance / connectionDistance) * 0.7;
-              ctx.strokeStyle = particleColor;
+              const lineColor = particles[i].color || particleColor;
+              ctx.strokeStyle = lineColor;
               ctx.globalAlpha = alpha;
               ctx.beginPath();
               ctx.moveTo(particles[i].x, particles[i].y);
@@ -824,8 +904,10 @@ export default function Home() {
           particle.trail.pop();
         }
         
+        const currentColor = particle.color || particleColor;
+        
         if (particle.trail.length > 1) {
-          ctx.strokeStyle = particleColor;
+          ctx.strokeStyle = currentColor;
           ctx.lineWidth = 2.5;
           
           for (let i = 0; i < particle.trail.length - 1; i++) {
@@ -842,8 +924,8 @@ export default function Home() {
         
         if (glowIntensity > 0) {
           ctx.shadowBlur = 40 * glowIntensity;
-          ctx.shadowColor = particleColor;
-          ctx.fillStyle = particleColor;
+          ctx.shadowColor = currentColor;
+          ctx.fillStyle = currentColor;
           ctx.beginPath();
           ctx.arc(particle.x, particle.y, particleSize + 2, 0, Math.PI * 2);
           ctx.fill();
@@ -867,7 +949,7 @@ export default function Home() {
         
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
-        ctx.fillStyle = particleColor;
+        ctx.fillStyle = currentColor;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particleSize, 0, Math.PI * 2);
         ctx.fill();
@@ -941,9 +1023,9 @@ export default function Home() {
     saveToHistory();
     
     const desertColors = ['#ffa500', '#ff6b35', '#d4a574', '#8b4513', '#cd853f', '#daa520'];
-    const shapes = ['saguaro', 'prickly-pear', 'desert-flower', 'tumbleweed', 'mesa', 'sand-dune', 'desert-sun', 'crescent-moon', 'roadrunner', 'coyote', 'yucca', 'agave', 'rock-formation', 'desert-star', 'marfa-lights'];
+    const shapes = ['saguaro', 'prickly-pear', 'desert-flower', 'tumbleweed', 'mesa', 'sand-dune', 'desert-sun', 'crescent-moon', 'roadrunner', 'coyote', 'yucca', 'agave', 'rock-formation', 'desert-star', 'marfa-lights', 'rainbow-thing'];
     const gradients = ['solid', 'radial', 'linear'];
-    const scenes = ['none', 'sunset-sky', 'starry-night', 'desert-landscape', 'prada-marfa', 'judd-building', 'tumbleweed-desert'];
+    const scenes = ['none', 'sunset-sky', 'starry-night', 'desert-landscape', 'prada-marfa', 'judd-building', 'tumbleweed-desert', 'beeple-astronaut'];
     
     setParticleColor(desertColors[Math.floor(Math.random() * desertColors.length)]);
     setBackgroundColor('#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'));
@@ -1019,7 +1101,7 @@ export default function Home() {
       gradientType: 'radial',
       glowIntensity: 3.0,
       connectionDistance: 100,
-      sceneType: 'none'
+      sceneType: 'beeple-astronaut'
     },
     heat: {
       particleColor: '#ff0000',
@@ -1192,6 +1274,12 @@ export default function Home() {
             figurePath.push({ x: centerX + orb.x + Math.cos(angle) * orb.r, y: centerY + orb.y + Math.sin(angle) * orb.r });
           }
         });`;
+    } else if (shapeType === 'rainbow-thing') {
+      shapeCode = `for (let i = 0; i <= 150; i++) {
+          const x = centerX - 200 + i * 2.7;
+          const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
+          figurePath.push({ x, y });
+        }`;
     }
 
     // Generate scene rendering code
@@ -1353,6 +1441,43 @@ export default function Home() {
             drawTumbleweed(550, canvas.height * 0.55, 18);
             drawTumbleweed(80, canvas.height * 0.68, 27);
             drawTumbleweed(320, canvas.height * 0.58, 24);
+          } else if ('${sceneType}' === 'beeple-astronaut') {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(0.3, '#ee5a6f');
+            gradient.addColorStop(0.6, '#f4a460');
+            gradient.addColorStop(1, '#d2691e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#c19a6b';
+            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+            const astronautCenterX = canvas.width * 0.7;
+            const astronautBottomY = canvas.height * 0.7;
+            ctx.fillStyle = '#1a1a1a';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.fillRect(astronautCenterX - 35, astronautBottomY - 120, 25, 120);
+            ctx.fillRect(astronautCenterX + 10, astronautBottomY - 120, 25, 120);
+            ctx.fillRect(astronautCenterX - 40, astronautBottomY - 15, 35, 15);
+            ctx.fillRect(astronautCenterX + 5, astronautBottomY - 15, 35, 15);
+            ctx.fillRect(astronautCenterX - 50, astronautBottomY - 200, 100, 80);
+            ctx.fillRect(astronautCenterX - 70, astronautBottomY - 190, 20, 60);
+            ctx.fillRect(astronautCenterX + 50, astronautBottomY - 185, 20, 55);
+            ctx.fillStyle = '#2a2a2a';
+            ctx.fillRect(astronautCenterX - 35, astronautBottomY - 195, 70, 40);
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.arc(astronautCenterX, astronautBottomY - 230, 55, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#3a3a3a';
+            ctx.beginPath();
+            ctx.arc(astronautCenterX, astronautBottomY - 230, 40, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#5a5a5a';
+            ctx.beginPath();
+            ctx.arc(astronautCenterX - 10, astronautBottomY - 240, 15, 0, Math.PI * 2);
+            ctx.fill();
           }
         }
       `;
@@ -1435,7 +1560,8 @@ export default function Home() {
                         const distance = Math.sqrt(dx * dx + dy * dy);
                         if (distance < config.connectionDistance) {
                             const alpha = (1 - distance / config.connectionDistance) * 0.7;
-                            ctx.strokeStyle = config.particleColor; ctx.globalAlpha = alpha;
+                            const lineColor = particles[i].color || config.particleColor;
+                            ctx.strokeStyle = lineColor; ctx.globalAlpha = alpha;
                             ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
                         }
                     }
@@ -1459,8 +1585,9 @@ export default function Home() {
                 particle.vx *= 0.92; particle.vy *= 0.92; particle.x += particle.vx; particle.y += particle.vy;
                 particle.trail.unshift({ x: particle.x, y: particle.y });
                 if (particle.trail.length > config.trailLength) particle.trail.pop();
+                const currentColor = particle.color || config.particleColor;
                 if (particle.trail.length > 1) {
-                    ctx.strokeStyle = config.particleColor; ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = currentColor; ctx.lineWidth = 2.5;
                     for (let i = 0; i < particle.trail.length - 1; i++) {
                         const alpha = (1 - i / particle.trail.length) * 0.6; ctx.globalAlpha = alpha;
                         ctx.beginPath(); ctx.moveTo(particle.trail[i].x, particle.trail[i].y);
@@ -1468,8 +1595,8 @@ export default function Home() {
                     }
                 }
                 ctx.globalAlpha = 1;
-                if (config.glowIntensity > 0) { ctx.shadowBlur = 40 * config.glowIntensity; ctx.shadowColor = config.particleColor; }
-                ctx.fillStyle = config.particleColor;
+                if (config.glowIntensity > 0) { ctx.shadowBlur = 40 * config.glowIntensity; ctx.shadowColor = currentColor; }
+                ctx.fillStyle = currentColor;
                 ctx.beginPath(); ctx.arc(particle.x, particle.y, config.particleSize, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
             });
@@ -1531,13 +1658,17 @@ export default function Home() {
       const animationUri = uris[1];
       
       const displayNumber = Math.floor(Math.random() * 9999) + 1;
+      const shapeDisplayName = shapeType === 'rainbow-thing' 
+        ? 'Rainbow Thing (NOT a Squiggle)' 
+        : shapeType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      
       const metadata = {
         name: `Marfa Particle Art #${displayNumber}`,
         description: `An interactive desert-inspired particle artwork from Marfa, Texas. Created on ${new Date().toLocaleDateString()}. Click and drag to interact with the particles!`,
         image: imageUri,
         animation_url: animationUri,
         attributes: [
-          { trait_type: "Shape", value: shapeType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') },
+          { trait_type: "Shape", value: shapeDisplayName },
           { trait_type: "Scene", value: sceneType === 'none' ? 'None' : sceneType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') },
           { trait_type: "Particle Color", value: particleColor },
           { trait_type: "Background Color", value: backgroundColor },
@@ -1839,6 +1970,7 @@ export default function Home() {
                   <option value="prada-marfa">PRADA MARFA</option>
                   <option value="judd-building">JUDD BUILDING</option>
                   <option value="tumbleweed-desert">TUMBLEWEED DESERT</option>
+                  <option value="beeple-astronaut">BEEPLE ASTRONAUT</option>
                 </select>
               </div>
 
@@ -1978,6 +2110,7 @@ export default function Home() {
                   <option value="rock-formation">ROCK FORMATION</option>
                   <option value="desert-star">DESERT STAR</option>
                   <option value="marfa-lights">MARFA LIGHTS</option>
+                  <option value="rainbow-thing">RAINBOW THING (NOT A SQUIGGLE)</option>
                 </select>
               </div>
 
