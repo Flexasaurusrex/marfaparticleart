@@ -494,9 +494,9 @@ export default function Home() {
     } else if (shapeType === 'rainbow-thing') {
       // Rainbow Thing (NOT a Squiggle) - for Art Blocks event 🌈
       // Definitely not a squiggle. Nope. Totally different.
-      // CENTERED on canvas - shifted right to prevent left overflow
+      // CENTERED on canvas - shifted right to stay fully visible
       for (let i = 0; i <= 150; i++) {
-        const x = centerX - 170 + i * 2.6;
+        const x = centerX - 155 + i * 2.6;
         const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
         figurePath.push({ x, y });
       }
@@ -1250,7 +1250,7 @@ export default function Home() {
         });`;
     } else if (shapeType === 'rainbow-thing') {
       shapeCode = `for (let i = 0; i <= 150; i++) {
-          const x = centerX - 170 + i * 2.6;
+          const x = centerX - 155 + i * 2.6;
           const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
           figurePath.push({ x, y });
         }`;
