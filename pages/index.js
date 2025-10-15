@@ -659,7 +659,7 @@ export default function Home() {
       });
       
     } else if (sceneType === 'tumbleweed-desert') {
-      // Empty flat desert
+      // Empty flat desert with tumbleweeds and cacti
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#87CEEB');
       gradient.addColorStop(0.5, '#f4a460');
@@ -667,10 +667,10 @@ export default function Home() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Tumbleweeds rolling
+      // Draw tumbleweed function
       const drawTumbleweed = (x, y, size) => {
         ctx.strokeStyle = '#8b7355';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         for (let i = 0; i < 12; i++) {
           const angle = (i / 12) * Math.PI * 2;
           ctx.beginPath();
@@ -681,11 +681,57 @@ export default function Home() {
           );
           ctx.stroke();
         }
+        // Add some cross branches
+        for (let i = 0; i < 6; i++) {
+          const angle = (i / 6) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.arc(x, y, size * 0.6, angle, angle + Math.PI / 3);
+          ctx.stroke();
+        }
       };
       
+      // Draw small cactus function
+      const drawCactus = (x, y, height) => {
+        ctx.fillStyle = '#2d5016';
+        ctx.strokeStyle = '#1a3d0f';
+        ctx.lineWidth = 1;
+        // Main trunk
+        ctx.fillRect(x - 3, y - height, 6, height);
+        ctx.strokeRect(x - 3, y - height, 6, height);
+        // Left arm
+        if (height > 20) {
+          ctx.fillRect(x - 10, y - height * 0.6, 7, 3);
+          ctx.fillRect(x - 10, y - height * 0.6, 3, height * 0.4);
+          ctx.strokeRect(x - 10, y - height * 0.6, 7, 3);
+          ctx.strokeRect(x - 10, y - height * 0.6, 3, height * 0.4);
+        }
+        // Right arm
+        if (height > 25) {
+          ctx.fillRect(x + 3, y - height * 0.7, 7, 3);
+          ctx.fillRect(x + 7, y - height * 0.7, 3, height * 0.5);
+          ctx.strokeRect(x + 3, y - height * 0.7, 7, 3);
+          ctx.strokeRect(x + 7, y - height * 0.7, 3, height * 0.5);
+        }
+      };
+      
+      // Ground line
+      const groundLevel = canvas.height * 0.75;
+      
+      // Draw cacti at various positions
+      drawCactus(100, groundLevel, 35);
+      drawCactus(180, groundLevel, 28);
+      drawCactus(420, groundLevel, 40);
+      drawCactus(520, groundLevel, 32);
+      drawCactus(50, groundLevel, 25);
+      
+      // Draw tumbleweeds at various positions and sizes
       drawTumbleweed(150, canvas.height * 0.6, 25);
       drawTumbleweed(400, canvas.height * 0.7, 30);
       drawTumbleweed(500, canvas.height * 0.5, 20);
+      drawTumbleweed(250, canvas.height * 0.65, 22);
+      drawTumbleweed(550, canvas.height * 0.55, 18);
+      drawTumbleweed(80, canvas.height * 0.68, 27);
+      drawTumbleweed(320, canvas.height * 0.58, 24);
     }
   };
 
@@ -1260,7 +1306,7 @@ export default function Home() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             const drawTumbleweed = (x, y, size) => {
               ctx.strokeStyle = '#8b7355';
-              ctx.lineWidth = 2;
+              ctx.lineWidth = 1.5;
               for (let i = 0; i < 12; i++) {
                 const angle = (i / 12) * Math.PI * 2;
                 ctx.beginPath();
@@ -1268,10 +1314,45 @@ export default function Home() {
                 ctx.lineTo(x + Math.cos(angle) * size, y + Math.sin(angle) * size);
                 ctx.stroke();
               }
+              for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.arc(x, y, size * 0.6, angle, angle + Math.PI / 3);
+                ctx.stroke();
+              }
             };
+            const drawCactus = (x, y, height) => {
+              ctx.fillStyle = '#2d5016';
+              ctx.strokeStyle = '#1a3d0f';
+              ctx.lineWidth = 1;
+              ctx.fillRect(x - 3, y - height, 6, height);
+              ctx.strokeRect(x - 3, y - height, 6, height);
+              if (height > 20) {
+                ctx.fillRect(x - 10, y - height * 0.6, 7, 3);
+                ctx.fillRect(x - 10, y - height * 0.6, 3, height * 0.4);
+                ctx.strokeRect(x - 10, y - height * 0.6, 7, 3);
+                ctx.strokeRect(x - 10, y - height * 0.6, 3, height * 0.4);
+              }
+              if (height > 25) {
+                ctx.fillRect(x + 3, y - height * 0.7, 7, 3);
+                ctx.fillRect(x + 7, y - height * 0.7, 3, height * 0.5);
+                ctx.strokeRect(x + 3, y - height * 0.7, 7, 3);
+                ctx.strokeRect(x + 7, y - height * 0.7, 3, height * 0.5);
+              }
+            };
+            const groundLevel = canvas.height * 0.75;
+            drawCactus(100, groundLevel, 35);
+            drawCactus(180, groundLevel, 28);
+            drawCactus(420, groundLevel, 40);
+            drawCactus(520, groundLevel, 32);
+            drawCactus(50, groundLevel, 25);
             drawTumbleweed(150, canvas.height * 0.6, 25);
             drawTumbleweed(400, canvas.height * 0.7, 30);
             drawTumbleweed(500, canvas.height * 0.5, 20);
+            drawTumbleweed(250, canvas.height * 0.65, 22);
+            drawTumbleweed(550, canvas.height * 0.55, 18);
+            drawTumbleweed(80, canvas.height * 0.68, 27);
+            drawTumbleweed(320, canvas.height * 0.58, 24);
           }
         }
       `;
