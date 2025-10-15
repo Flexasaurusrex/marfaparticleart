@@ -164,9 +164,9 @@ export default function Home() {
     if (sceneType === 'beeple-astronaut') {
       centerX = canvas.width * 0.28;
       centerY = canvas.height * 0.28;
-    } else if (sceneType === 'judd-building') {
+    } else if (sceneType === 'judd-building' || sceneType === 'desert-landscape') {
       centerX = canvas.width / 2;
-      centerY = canvas.height * 0.35; // Float above the buildings
+      centerY = canvas.height * 0.35; // Float above the buildings/mountains
     }
     
     if (shapeType === 'saguaro') {
@@ -494,9 +494,9 @@ export default function Home() {
     } else if (shapeType === 'rainbow-thing') {
       // Rainbow Thing (NOT a Squiggle) - for Art Blocks event 🌈
       // Definitely not a squiggle. Nope. Totally different.
-      // CENTERED on canvas
+      // CENTERED on canvas - adjusted to prevent left overflow
       for (let i = 0; i <= 150; i++) {
-        const x = centerX - 202.5 + i * 2.7;
+        const x = centerX - 195 + i * 2.6;
         const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
         figurePath.push({ x, y });
       }
@@ -1250,7 +1250,7 @@ export default function Home() {
         });`;
     } else if (shapeType === 'rainbow-thing') {
       shapeCode = `for (let i = 0; i <= 150; i++) {
-          const x = centerX - 202.5 + i * 2.7;
+          const x = centerX - 195 + i * 2.6;
           const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
           figurePath.push({ x, y });
         }`;
@@ -1462,7 +1462,7 @@ export default function Home() {
         if (config.sceneType === 'beeple-astronaut') {
           centerX = canvas.width * 0.28;
           centerY = canvas.height * 0.28;
-        } else if (config.sceneType === 'judd-building') {
+        } else if (config.sceneType === 'judd-building' || config.sceneType === 'desert-landscape') {
           centerX = canvas.width / 2;
           centerY = canvas.height * 0.35;
         }
