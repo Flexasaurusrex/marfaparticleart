@@ -1,12 +1,12 @@
 import { ThirdwebProvider } from "@thirdweb-dev/react";
-import { BaseMainnet } from "@thirdweb-dev/chains";
+import { Base } from "@thirdweb-dev/chains";
 
 function MyApp({ Component, pageProps }) {
   return (
     <ThirdwebProvider
-      activeChain={BaseMainnet}
+      activeChain={Base}
       clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
-      supportedChains={[BaseMainnet]}
+      supportedChains={[Base]}
     >
       <Component {...pageProps} />
     </ThirdwebProvider>
