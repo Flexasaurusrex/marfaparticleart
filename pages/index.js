@@ -157,9 +157,17 @@ export default function Home() {
     canvas.height = 600;
 
     const figurePath = [];
-    // Position particles in upper left for Beeple Astronaut scene to avoid overlap
-    const centerX = sceneType === 'beeple-astronaut' ? canvas.width * 0.28 : canvas.width / 2;
-    const centerY = sceneType === 'beeple-astronaut' ? canvas.height * 0.28 : canvas.height / 2;
+    // Position particles in upper portion for scenes with ground elements
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+    
+    if (sceneType === 'beeple-astronaut') {
+      centerX = canvas.width * 0.28;
+      centerY = canvas.height * 0.28;
+    } else if (sceneType === 'judd-building') {
+      centerX = canvas.width / 2;
+      centerY = canvas.height * 0.35; // Float above the buildings
+    }
     
     if (shapeType === 'saguaro') {
       // IMPROVED: Tall realistic saguaro with 3 arms at different heights
@@ -678,7 +686,7 @@ export default function Home() {
       });
       
     } else if (sceneType === 'tumbleweed-desert') {
-      // Empty flat desert with tumbleweeds and cacti
+      // Empty flat desert with rolling tumbleweeds
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#87CEEB');
       gradient.addColorStop(0.5, '#f4a460');
@@ -686,10 +694,10 @@ export default function Home() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Draw tumbleweed function
+      // Simple tumbleweed function
       const drawTumbleweed = (x, y, size) => {
         ctx.strokeStyle = '#8b7355';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         for (let i = 0; i < 12; i++) {
           const angle = (i / 12) * Math.PI * 2;
           ctx.beginPath();
@@ -700,57 +708,21 @@ export default function Home() {
           );
           ctx.stroke();
         }
-        // Add some cross branches
-        for (let i = 0; i < 6; i++) {
-          const angle = (i / 6) * Math.PI * 2;
-          ctx.beginPath();
-          ctx.arc(x, y, size * 0.6, angle, angle + Math.PI / 3);
-          ctx.stroke();
-        }
       };
       
-      // Draw small cactus function
-      const drawCactus = (x, y, height) => {
-        ctx.fillStyle = '#2d5016';
-        ctx.strokeStyle = '#1a3d0f';
-        ctx.lineWidth = 1;
-        // Main trunk
-        ctx.fillRect(x - 3, y - height, 6, height);
-        ctx.strokeRect(x - 3, y - height, 6, height);
-        // Left arm
-        if (height > 20) {
-          ctx.fillRect(x - 10, y - height * 0.6, 7, 3);
-          ctx.fillRect(x - 10, y - height * 0.6, 3, height * 0.4);
-          ctx.strokeRect(x - 10, y - height * 0.6, 7, 3);
-          ctx.strokeRect(x - 10, y - height * 0.6, 3, height * 0.4);
-        }
-        // Right arm
-        if (height > 25) {
-          ctx.fillRect(x + 3, y - height * 0.7, 7, 3);
-          ctx.fillRect(x + 7, y - height * 0.7, 3, height * 0.5);
-          ctx.strokeRect(x + 3, y - height * 0.7, 7, 3);
-          ctx.strokeRect(x + 7, y - height * 0.7, 3, height * 0.5);
-        }
-      };
-      
-      // Ground line
-      const groundLevel = canvas.height * 0.75;
-      
-      // Draw cacti at various positions
-      drawCactus(100, groundLevel, 35);
-      drawCactus(180, groundLevel, 28);
-      drawCactus(420, groundLevel, 40);
-      drawCactus(520, groundLevel, 32);
-      drawCactus(50, groundLevel, 25);
-      
-      // Draw tumbleweeds at various positions and sizes
-      drawTumbleweed(150, canvas.height * 0.6, 25);
-      drawTumbleweed(400, canvas.height * 0.7, 30);
-      drawTumbleweed(500, canvas.height * 0.5, 20);
-      drawTumbleweed(250, canvas.height * 0.65, 22);
-      drawTumbleweed(550, canvas.height * 0.55, 18);
-      drawTumbleweed(80, canvas.height * 0.68, 27);
-      drawTumbleweed(320, canvas.height * 0.58, 24);
+      // Lots of tumbleweeds at different sizes and positions
+      drawTumbleweed(120, canvas.height * 0.3, 18);
+      drawTumbleweed(250, canvas.height * 0.45, 32);
+      drawTumbleweed(450, canvas.height * 0.35, 24);
+      drawTumbleweed(180, canvas.height * 0.6, 28);
+      drawTumbleweed(520, canvas.height * 0.55, 20);
+      drawTumbleweed(80, canvas.height * 0.5, 26);
+      drawTumbleweed(350, canvas.height * 0.25, 22);
+      drawTumbleweed(410, canvas.height * 0.65, 30);
+      drawTumbleweed(300, canvas.height * 0.7, 19);
+      drawTumbleweed(550, canvas.height * 0.4, 25);
+      drawTumbleweed(50, canvas.height * 0.7, 23);
+      drawTumbleweed(200, canvas.height * 0.8, 27);
     } else if (sceneType === 'beeple-astronaut') {
       // GIANT BEEPLE ASTRONAUT in the desert!
       // Sky gradient
@@ -1396,7 +1368,7 @@ export default function Home() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             const drawTumbleweed = (x, y, size) => {
               ctx.strokeStyle = '#8b7355';
-              ctx.lineWidth = 1.5;
+              ctx.lineWidth = 2;
               for (let i = 0; i < 12; i++) {
                 const angle = (i / 12) * Math.PI * 2;
                 ctx.beginPath();
@@ -1404,45 +1376,19 @@ export default function Home() {
                 ctx.lineTo(x + Math.cos(angle) * size, y + Math.sin(angle) * size);
                 ctx.stroke();
               }
-              for (let i = 0; i < 6; i++) {
-                const angle = (i / 6) * Math.PI * 2;
-                ctx.beginPath();
-                ctx.arc(x, y, size * 0.6, angle, angle + Math.PI / 3);
-                ctx.stroke();
-              }
             };
-            const drawCactus = (x, y, height) => {
-              ctx.fillStyle = '#2d5016';
-              ctx.strokeStyle = '#1a3d0f';
-              ctx.lineWidth = 1;
-              ctx.fillRect(x - 3, y - height, 6, height);
-              ctx.strokeRect(x - 3, y - height, 6, height);
-              if (height > 20) {
-                ctx.fillRect(x - 10, y - height * 0.6, 7, 3);
-                ctx.fillRect(x - 10, y - height * 0.6, 3, height * 0.4);
-                ctx.strokeRect(x - 10, y - height * 0.6, 7, 3);
-                ctx.strokeRect(x - 10, y - height * 0.6, 3, height * 0.4);
-              }
-              if (height > 25) {
-                ctx.fillRect(x + 3, y - height * 0.7, 7, 3);
-                ctx.fillRect(x + 7, y - height * 0.7, 3, height * 0.5);
-                ctx.strokeRect(x + 3, y - height * 0.7, 7, 3);
-                ctx.strokeRect(x + 7, y - height * 0.7, 3, height * 0.5);
-              }
-            };
-            const groundLevel = canvas.height * 0.75;
-            drawCactus(100, groundLevel, 35);
-            drawCactus(180, groundLevel, 28);
-            drawCactus(420, groundLevel, 40);
-            drawCactus(520, groundLevel, 32);
-            drawCactus(50, groundLevel, 25);
-            drawTumbleweed(150, canvas.height * 0.6, 25);
-            drawTumbleweed(400, canvas.height * 0.7, 30);
-            drawTumbleweed(500, canvas.height * 0.5, 20);
-            drawTumbleweed(250, canvas.height * 0.65, 22);
-            drawTumbleweed(550, canvas.height * 0.55, 18);
-            drawTumbleweed(80, canvas.height * 0.68, 27);
-            drawTumbleweed(320, canvas.height * 0.58, 24);
+            drawTumbleweed(120, canvas.height * 0.3, 18);
+            drawTumbleweed(250, canvas.height * 0.45, 32);
+            drawTumbleweed(450, canvas.height * 0.35, 24);
+            drawTumbleweed(180, canvas.height * 0.6, 28);
+            drawTumbleweed(520, canvas.height * 0.55, 20);
+            drawTumbleweed(80, canvas.height * 0.5, 26);
+            drawTumbleweed(350, canvas.height * 0.25, 22);
+            drawTumbleweed(410, canvas.height * 0.65, 30);
+            drawTumbleweed(300, canvas.height * 0.7, 19);
+            drawTumbleweed(550, canvas.height * 0.4, 25);
+            drawTumbleweed(50, canvas.height * 0.7, 23);
+            drawTumbleweed(200, canvas.height * 0.8, 27);
           } else if ('${sceneType}' === 'beeple-astronaut') {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#ff6b6b');
@@ -1511,8 +1457,15 @@ export default function Home() {
         };
         let isDrawing = false; let mousePos = { x: 0, y: 0 };
         const particles = []; const figurePath = [];
-        const centerX = config.sceneType === 'beeple-astronaut' ? canvas.width * 0.28 : canvas.width / 2;
-        const centerY = config.sceneType === 'beeple-astronaut' ? canvas.height * 0.28 : canvas.height / 2;
+        let centerX = canvas.width / 2;
+        let centerY = canvas.height / 2;
+        if (config.sceneType === 'beeple-astronaut') {
+          centerX = canvas.width * 0.28;
+          centerY = canvas.height * 0.28;
+        } else if (config.sceneType === 'judd-building') {
+          centerX = canvas.width / 2;
+          centerY = canvas.height * 0.35;
+        }
         ${shapeCode}
         ${sceneRenderCode}
         for (let i = 0; i < config.particleCount; i++) {
