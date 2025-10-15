@@ -517,32 +517,29 @@ export default function Home() {
     if (sceneType === 'none') return;
     
     if (sceneType === 'sunset-sky') {
-      // Orange/purple gradient sky with horizon
+      // Orange/red sunset gradient - FILLS ENTIRE CANVAS
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#ff6b35');
-      gradient.addColorStop(0.4, '#ff8c42');
-      gradient.addColorStop(0.7, '#ffa552');
+      gradient.addColorStop(0.3, '#ff8c42');
+      gradient.addColorStop(0.6, '#ffa552');
+      gradient.addColorStop(0.85, '#d2691e');
       gradient.addColorStop(1, '#8b4513');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Horizon line
-      ctx.fillStyle = '#4a2c1a';
-      ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
-      
     } else if (sceneType === 'starry-night') {
-      // Dark sky with stars
-      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
+      // Dark sky with stars - FILLS ENTIRE CANVAS
+      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width * 0.7);
       gradient.addColorStop(0, '#0a0624');
       gradient.addColorStop(1, '#000000');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Stars
+      // Stars scattered across ENTIRE canvas
       ctx.fillStyle = 'white';
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 100; i++) {
         const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height * 0.7;
+        const y = Math.random() * canvas.height;
         const size = Math.random() * 2 + 0.5;
         ctx.globalAlpha = Math.random() * 0.8 + 0.2;
         ctx.beginPath();
@@ -596,13 +593,13 @@ export default function Home() {
       
       // Desert floor
       ctx.fillStyle = '#d2b48c';
-      ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+      ctx.fillRect(0, canvas.height * 0.75, canvas.width, canvas.height * 0.25);
       
-      // Prada Marfa building silhouette (simple rectangle with door/windows)
-      const buildingW = 180;
-      const buildingH = 100;
+      // Prada Marfa building at BOTTOM - particles float above
+      const buildingW = 200;
+      const buildingH = 90;
       const buildingX = canvas.width / 2 - buildingW / 2;
-      const buildingY = canvas.height * 0.7 - buildingH;
+      const buildingY = canvas.height - buildingH;
       
       // Building
       ctx.fillStyle = '#ffffff';
@@ -610,23 +607,23 @@ export default function Home() {
       
       // Roof overhang
       ctx.fillStyle = '#000000';
-      ctx.fillRect(buildingX - 10, buildingY - 10, buildingW + 20, 10);
+      ctx.fillRect(buildingX - 10, buildingY - 8, buildingW + 20, 8);
       
       // Door
       ctx.fillStyle = '#000000';
-      ctx.fillRect(buildingX + buildingW/2 - 20, buildingY + 30, 40, 70);
+      ctx.fillRect(buildingX + buildingW/2 - 18, buildingY + 25, 36, 65);
       
       // Windows
-      ctx.fillRect(buildingX + 20, buildingY + 20, 35, 35);
-      ctx.fillRect(buildingX + buildingW - 55, buildingY + 20, 35, 35);
+      ctx.fillRect(buildingX + 25, buildingY + 18, 32, 32);
+      ctx.fillRect(buildingX + buildingW - 57, buildingY + 18, 32, 32);
       
       // PRADA text
-      ctx.font = 'bold 24px Arial';
+      ctx.font = 'bold 22px Arial';
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';
-      ctx.fillText('PRADA', canvas.width / 2, buildingY + 15);
-      ctx.font = 'bold 12px Arial';
-      ctx.fillText('MARFA', canvas.width / 2, buildingY + buildingH + 20);
+      ctx.fillText('PRADA', canvas.width / 2, buildingY + 12);
+      ctx.font = 'bold 11px Arial';
+      ctx.fillText('MARFA', canvas.width / 2, canvas.height - 8);
       
     } else if (sceneType === 'judd-building') {
       // Sky
@@ -1159,23 +1156,22 @@ export default function Home() {
           if ('${sceneType}' === 'sunset-sky') {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#ff6b35');
-            gradient.addColorStop(0.4, '#ff8c42');
-            gradient.addColorStop(0.7, '#ffa552');
+            gradient.addColorStop(0.3, '#ff8c42');
+            gradient.addColorStop(0.6, '#ffa552');
+            gradient.addColorStop(0.85, '#d2691e');
             gradient.addColorStop(1, '#8b4513');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#4a2c1a';
-            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
           } else if ('${sceneType}' === 'starry-night') {
-            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
+            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width * 0.7);
             gradient.addColorStop(0, '#0a0624');
             gradient.addColorStop(1, '#000000');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 100; i++) {
               const x = Math.random() * canvas.width;
-              const y = Math.random() * canvas.height * 0.7;
+              const y = Math.random() * canvas.height;
               const size = Math.random() * 2 + 0.5;
               ctx.globalAlpha = Math.random() * 0.8 + 0.2;
               ctx.beginPath();
@@ -1218,22 +1214,22 @@ export default function Home() {
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#d2b48c';
-            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
-            const buildingW = 180, buildingH = 100;
+            ctx.fillRect(0, canvas.height * 0.75, canvas.width, canvas.height * 0.25);
+            const buildingW = 200, buildingH = 90;
             const buildingX = canvas.width / 2 - buildingW / 2;
-            const buildingY = canvas.height * 0.7 - buildingH;
+            const buildingY = canvas.height - buildingH;
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(buildingX, buildingY, buildingW, buildingH);
             ctx.fillStyle = '#000000';
-            ctx.fillRect(buildingX - 10, buildingY - 10, buildingW + 20, 10);
-            ctx.fillRect(buildingX + buildingW/2 - 20, buildingY + 30, 40, 70);
-            ctx.fillRect(buildingX + 20, buildingY + 20, 35, 35);
-            ctx.fillRect(buildingX + buildingW - 55, buildingY + 20, 35, 35);
-            ctx.font = 'bold 24px Arial';
+            ctx.fillRect(buildingX - 10, buildingY - 8, buildingW + 20, 8);
+            ctx.fillRect(buildingX + buildingW/2 - 18, buildingY + 25, 36, 65);
+            ctx.fillRect(buildingX + 25, buildingY + 18, 32, 32);
+            ctx.fillRect(buildingX + buildingW - 57, buildingY + 18, 32, 32);
+            ctx.font = 'bold 22px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('PRADA', canvas.width / 2, buildingY + 15);
-            ctx.font = 'bold 12px Arial';
-            ctx.fillText('MARFA', canvas.width / 2, buildingY + buildingH + 20);
+            ctx.fillText('PRADA', canvas.width / 2, buildingY + 12);
+            ctx.font = 'bold 11px Arial';
+            ctx.fillText('MARFA', canvas.width / 2, canvas.height - 8);
           } else if ('${sceneType}' === 'judd-building') {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#708090');
