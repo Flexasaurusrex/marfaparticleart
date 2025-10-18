@@ -40,7 +40,7 @@ export default function Home() {
   const chainId = useChainId();
   const switchChain = useSwitchChain();
   const { mutateAsync: upload } = useStorageUpload();
-  const signer = useSigner();
+  const signer = useSigner()?.data;
 
   const contractAddress = "0xe2184682de09f774486EaA59DA0Eb14Cf133f875";
   const contractABI = [
