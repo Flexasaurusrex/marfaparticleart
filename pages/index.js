@@ -157,8 +157,17 @@ export default function Home() {
     canvas.height = 600;
 
     const figurePath = [];
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
+    // Position particles in upper portion for scenes with ground elements
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
+    
+    if (sceneType === 'beeple-astronaut') {
+      centerX = canvas.width * 0.28;
+      centerY = canvas.height * 0.28;
+    } else if (sceneType === 'judd-building' || sceneType === 'desert-landscape') {
+      centerX = canvas.width / 2;
+      centerY = canvas.height * 0.35; // Float above the buildings/mountains
+    }
     
     if (shapeType === 'saguaro') {
       // IMPROVED: Tall realistic saguaro with 3 arms at different heights
@@ -482,11 +491,20 @@ export default function Home() {
           });
         }
       });
+    } else if (shapeType === 'rainbow-thing') {
+      // Rainbow Thing (NOT a Squiggle) - for Art Blocks event 🌈
+      // Definitely not a squiggle. Nope. Totally different.
+      // CENTERED on canvas - shifted right to stay fully visible
+      for (let i = 0; i <= 150; i++) {
+        const x = centerX - 155 + i * 2.6;
+        const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
+        figurePath.push({ x, y });
+      }
     }
 
     figurePathRef.current = figurePath;
 
-  }, [shapeType]);
+  }, [shapeType, sceneType]);
 
   useEffect(() => {
     if (figurePathRef.current.length === 0) return;
@@ -497,6 +515,14 @@ export default function Home() {
     for (let i = 0; i < particleCount; i++) {
       const pathIndex = Math.floor((i / particleCount) * figurePath.length);
       const pos = figurePath[pathIndex];
+      
+      // Rainbow gradient for rainbow-thing shape
+      let particleColorOverride = null;
+      if (shapeType === 'rainbow-thing') {
+        const hue = (i / particleCount) * 360; // 0-360 degrees around color wheel
+        particleColorOverride = `hsl(${hue}, 100%, 60%)`;
+      }
+      
       newParticles.push({
         x: pos.x,
         y: pos.y,
@@ -505,7 +531,8 @@ export default function Home() {
         vx: 0,
         vy: 0,
         pathIndex: pathIndex,
-        trail: []
+        trail: [],
+        color: particleColorOverride // Store individual color if rainbow
       });
     }
     
@@ -517,32 +544,29 @@ export default function Home() {
     if (sceneType === 'none') return;
     
     if (sceneType === 'sunset-sky') {
-      // Orange/purple gradient sky with horizon
+      // Orange/red sunset gradient - FILLS ENTIRE CANVAS
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#ff6b35');
-      gradient.addColorStop(0.4, '#ff8c42');
-      gradient.addColorStop(0.7, '#ffa552');
+      gradient.addColorStop(0.3, '#ff8c42');
+      gradient.addColorStop(0.6, '#ffa552');
+      gradient.addColorStop(0.85, '#d2691e');
       gradient.addColorStop(1, '#8b4513');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Horizon line
-      ctx.fillStyle = '#4a2c1a';
-      ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
-      
     } else if (sceneType === 'starry-night') {
-      // Dark sky with stars
-      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
+      // Dark sky with stars - FILLS ENTIRE CANVAS
+      const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width * 0.7);
       gradient.addColorStop(0, '#0a0624');
       gradient.addColorStop(1, '#000000');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Stars
+      // Stars scattered across ENTIRE canvas
       ctx.fillStyle = 'white';
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 100; i++) {
         const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height * 0.7;
+        const y = Math.random() * canvas.height;
         const size = Math.random() * 2 + 0.5;
         ctx.globalAlpha = Math.random() * 0.8 + 0.2;
         ctx.beginPath();
@@ -596,13 +620,13 @@ export default function Home() {
       
       // Desert floor
       ctx.fillStyle = '#d2b48c';
-      ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+      ctx.fillRect(0, canvas.height * 0.75, canvas.width, canvas.height * 0.25);
       
-      // Prada Marfa building silhouette (simple rectangle with door/windows)
-      const buildingW = 180;
-      const buildingH = 100;
+      // Prada Marfa building at BOTTOM - particles float above
+      const buildingW = 200;
+      const buildingH = 90;
       const buildingX = canvas.width / 2 - buildingW / 2;
-      const buildingY = canvas.height * 0.7 - buildingH;
+      const buildingY = canvas.height - buildingH;
       
       // Building
       ctx.fillStyle = '#ffffff';
@@ -610,23 +634,23 @@ export default function Home() {
       
       // Roof overhang
       ctx.fillStyle = '#000000';
-      ctx.fillRect(buildingX - 10, buildingY - 10, buildingW + 20, 10);
+      ctx.fillRect(buildingX - 10, buildingY - 8, buildingW + 20, 8);
       
       // Door
       ctx.fillStyle = '#000000';
-      ctx.fillRect(buildingX + buildingW/2 - 20, buildingY + 30, 40, 70);
+      ctx.fillRect(buildingX + buildingW/2 - 18, buildingY + 25, 36, 65);
       
       // Windows
-      ctx.fillRect(buildingX + 20, buildingY + 20, 35, 35);
-      ctx.fillRect(buildingX + buildingW - 55, buildingY + 20, 35, 35);
+      ctx.fillRect(buildingX + 25, buildingY + 18, 32, 32);
+      ctx.fillRect(buildingX + buildingW - 57, buildingY + 18, 32, 32);
       
       // PRADA text
-      ctx.font = 'bold 24px Arial';
+      ctx.font = 'bold 22px Arial';
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';
-      ctx.fillText('PRADA', canvas.width / 2, buildingY + 15);
-      ctx.font = 'bold 12px Arial';
-      ctx.fillText('MARFA', canvas.width / 2, buildingY + buildingH + 20);
+      ctx.fillText('PRADA', canvas.width / 2, buildingY + 12);
+      ctx.font = 'bold 11px Arial';
+      ctx.fillText('MARFA', canvas.width / 2, canvas.height - 8);
       
     } else if (sceneType === 'judd-building') {
       // Sky
@@ -662,7 +686,7 @@ export default function Home() {
       });
       
     } else if (sceneType === 'tumbleweed-desert') {
-      // Empty flat desert
+      // Empty flat desert with rolling tumbleweeds
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#87CEEB');
       gradient.addColorStop(0.5, '#f4a460');
@@ -670,7 +694,7 @@ export default function Home() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Tumbleweeds rolling
+      // Simple tumbleweed function
       const drawTumbleweed = (x, y, size) => {
         ctx.strokeStyle = '#8b7355';
         ctx.lineWidth = 2;
@@ -686,9 +710,81 @@ export default function Home() {
         }
       };
       
-      drawTumbleweed(150, canvas.height * 0.6, 25);
-      drawTumbleweed(400, canvas.height * 0.7, 30);
-      drawTumbleweed(500, canvas.height * 0.5, 20);
+      // Lots of tumbleweeds at different sizes and positions
+      drawTumbleweed(120, canvas.height * 0.3, 18);
+      drawTumbleweed(250, canvas.height * 0.45, 32);
+      drawTumbleweed(450, canvas.height * 0.35, 24);
+      drawTumbleweed(180, canvas.height * 0.6, 28);
+      drawTumbleweed(520, canvas.height * 0.55, 20);
+      drawTumbleweed(80, canvas.height * 0.5, 26);
+      drawTumbleweed(350, canvas.height * 0.25, 22);
+      drawTumbleweed(410, canvas.height * 0.65, 30);
+      drawTumbleweed(300, canvas.height * 0.7, 19);
+      drawTumbleweed(550, canvas.height * 0.4, 25);
+      drawTumbleweed(50, canvas.height * 0.7, 23);
+      drawTumbleweed(200, canvas.height * 0.8, 27);
+    } else if (sceneType === 'beeple-astronaut') {
+      // GIANT BEEPLE ASTRONAUT in the desert!
+      // Sky gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#ff6b6b');
+      gradient.addColorStop(0.3, '#ee5a6f');
+      gradient.addColorStop(0.6, '#f4a460');
+      gradient.addColorStop(1, '#d2691e');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Desert floor
+      ctx.fillStyle = '#c19a6b';
+      ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+      
+      // GIANT ASTRONAUT SILHOUETTE
+      const astronautCenterX = canvas.width * 0.7;
+      const astronautBottomY = canvas.height * 0.7;
+      const astronautHeight = 280;
+      const astronautWidth = 140;
+      
+      ctx.fillStyle = '#1a1a1a';
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 2;
+      
+      // Legs
+      ctx.fillRect(astronautCenterX - 35, astronautBottomY - 120, 25, 120);
+      ctx.fillRect(astronautCenterX + 10, astronautBottomY - 120, 25, 120);
+      
+      // Boots
+      ctx.fillRect(astronautCenterX - 40, astronautBottomY - 15, 35, 15);
+      ctx.fillRect(astronautCenterX + 5, astronautBottomY - 15, 35, 15);
+      
+      // Body/Torso
+      ctx.fillRect(astronautCenterX - 50, astronautBottomY - 200, 100, 80);
+      
+      // Arms
+      ctx.fillRect(astronautCenterX - 70, astronautBottomY - 190, 20, 60);
+      ctx.fillRect(astronautCenterX + 50, astronautBottomY - 185, 20, 55);
+      
+      // Chest pack
+      ctx.fillStyle = '#2a2a2a';
+      ctx.fillRect(astronautCenterX - 35, astronautBottomY - 195, 70, 40);
+      
+      // Helmet (large round)
+      ctx.fillStyle = '#1a1a1a';
+      ctx.beginPath();
+      ctx.arc(astronautCenterX, astronautBottomY - 230, 55, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Helmet visor (reflective - lighter)
+      ctx.fillStyle = '#3a3a3a';
+      ctx.beginPath();
+      ctx.arc(astronautCenterX, astronautBottomY - 230, 40, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Visor reflection
+      ctx.fillStyle = '#5a5a5a';
+      ctx.beginPath();
+      ctx.arc(astronautCenterX - 10, astronautBottomY - 240, 15, 0, Math.PI * 2);
+      ctx.fill();
     }
   };
 
@@ -733,7 +829,8 @@ export default function Home() {
             
             if (distance < connectionDistance) {
               const alpha = (1 - distance / connectionDistance) * 0.7;
-              ctx.strokeStyle = particleColor;
+              const lineColor = particles[i].color || particleColor;
+              ctx.strokeStyle = lineColor;
               ctx.globalAlpha = alpha;
               ctx.beginPath();
               ctx.moveTo(particles[i].x, particles[i].y);
@@ -781,8 +878,10 @@ export default function Home() {
           particle.trail.pop();
         }
         
+        const currentColor = particle.color || particleColor;
+        
         if (particle.trail.length > 1) {
-          ctx.strokeStyle = particleColor;
+          ctx.strokeStyle = currentColor;
           ctx.lineWidth = 2.5;
           
           for (let i = 0; i < particle.trail.length - 1; i++) {
@@ -799,8 +898,8 @@ export default function Home() {
         
         if (glowIntensity > 0) {
           ctx.shadowBlur = 40 * glowIntensity;
-          ctx.shadowColor = particleColor;
-          ctx.fillStyle = particleColor;
+          ctx.shadowColor = currentColor;
+          ctx.fillStyle = currentColor;
           ctx.beginPath();
           ctx.arc(particle.x, particle.y, particleSize + 2, 0, Math.PI * 2);
           ctx.fill();
@@ -824,7 +923,7 @@ export default function Home() {
         
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
-        ctx.fillStyle = particleColor;
+        ctx.fillStyle = currentColor;
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particleSize, 0, Math.PI * 2);
         ctx.fill();
@@ -898,9 +997,9 @@ export default function Home() {
     saveToHistory();
     
     const desertColors = ['#ffa500', '#ff6b35', '#d4a574', '#8b4513', '#cd853f', '#daa520'];
-    const shapes = ['saguaro', 'prickly-pear', 'desert-flower', 'tumbleweed', 'mesa', 'sand-dune', 'desert-sun', 'crescent-moon', 'roadrunner', 'coyote', 'yucca', 'agave', 'rock-formation', 'desert-star', 'marfa-lights'];
+    const shapes = ['saguaro', 'prickly-pear', 'desert-flower', 'tumbleweed', 'mesa', 'sand-dune', 'desert-sun', 'crescent-moon', 'roadrunner', 'coyote', 'yucca', 'agave', 'rock-formation', 'desert-star', 'marfa-lights', 'rainbow-thing'];
     const gradients = ['solid', 'radial', 'linear'];
-    const scenes = ['none', 'sunset-sky', 'starry-night', 'desert-landscape', 'prada-marfa', 'judd-building', 'tumbleweed-desert'];
+    const scenes = ['none', 'sunset-sky', 'starry-night', 'desert-landscape', 'prada-marfa', 'judd-building', 'tumbleweed-desert', 'beeple-astronaut'];
     
     setParticleColor(desertColors[Math.floor(Math.random() * desertColors.length)]);
     setBackgroundColor('#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0'));
@@ -976,7 +1075,7 @@ export default function Home() {
       gradientType: 'radial',
       glowIntensity: 3.0,
       connectionDistance: 100,
-      sceneType: 'none'
+      sceneType: 'beeple-astronaut'
     },
     heat: {
       particleColor: '#ff0000',
@@ -1149,6 +1248,12 @@ export default function Home() {
             figurePath.push({ x: centerX + orb.x + Math.cos(angle) * orb.r, y: centerY + orb.y + Math.sin(angle) * orb.r });
           }
         });`;
+    } else if (shapeType === 'rainbow-thing') {
+      shapeCode = `for (let i = 0; i <= 150; i++) {
+          const x = centerX - 170 + i * 2.6;
+          const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
+          figurePath.push({ x, y });
+        }`;
     }
 
     // Generate scene rendering code
@@ -1159,23 +1264,22 @@ export default function Home() {
           if ('${sceneType}' === 'sunset-sky') {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#ff6b35');
-            gradient.addColorStop(0.4, '#ff8c42');
-            gradient.addColorStop(0.7, '#ffa552');
+            gradient.addColorStop(0.3, '#ff8c42');
+            gradient.addColorStop(0.6, '#ffa552');
+            gradient.addColorStop(0.85, '#d2691e');
             gradient.addColorStop(1, '#8b4513');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#4a2c1a';
-            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
           } else if ('${sceneType}' === 'starry-night') {
-            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
+            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width * 0.7);
             gradient.addColorStop(0, '#0a0624');
             gradient.addColorStop(1, '#000000');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 100; i++) {
               const x = Math.random() * canvas.width;
-              const y = Math.random() * canvas.height * 0.7;
+              const y = Math.random() * canvas.height;
               const size = Math.random() * 2 + 0.5;
               ctx.globalAlpha = Math.random() * 0.8 + 0.2;
               ctx.beginPath();
@@ -1218,22 +1322,22 @@ export default function Home() {
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#d2b48c';
-            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
-            const buildingW = 180, buildingH = 100;
+            ctx.fillRect(0, canvas.height * 0.75, canvas.width, canvas.height * 0.25);
+            const buildingW = 200, buildingH = 90;
             const buildingX = canvas.width / 2 - buildingW / 2;
-            const buildingY = canvas.height * 0.7 - buildingH;
+            const buildingY = canvas.height - buildingH;
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(buildingX, buildingY, buildingW, buildingH);
             ctx.fillStyle = '#000000';
-            ctx.fillRect(buildingX - 10, buildingY - 10, buildingW + 20, 10);
-            ctx.fillRect(buildingX + buildingW/2 - 20, buildingY + 30, 40, 70);
-            ctx.fillRect(buildingX + 20, buildingY + 20, 35, 35);
-            ctx.fillRect(buildingX + buildingW - 55, buildingY + 20, 35, 35);
-            ctx.font = 'bold 24px Arial';
+            ctx.fillRect(buildingX - 10, buildingY - 8, buildingW + 20, 8);
+            ctx.fillRect(buildingX + buildingW/2 - 18, buildingY + 25, 36, 65);
+            ctx.fillRect(buildingX + 25, buildingY + 18, 32, 32);
+            ctx.fillRect(buildingX + buildingW - 57, buildingY + 18, 32, 32);
+            ctx.font = 'bold 22px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('PRADA', canvas.width / 2, buildingY + 15);
-            ctx.font = 'bold 12px Arial';
-            ctx.fillText('MARFA', canvas.width / 2, buildingY + buildingH + 20);
+            ctx.fillText('PRADA', canvas.width / 2, buildingY + 12);
+            ctx.font = 'bold 11px Arial';
+            ctx.fillText('MARFA', canvas.width / 2, canvas.height - 8);
           } else if ('${sceneType}' === 'judd-building') {
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#708090');
@@ -1273,9 +1377,55 @@ export default function Home() {
                 ctx.stroke();
               }
             };
-            drawTumbleweed(150, canvas.height * 0.6, 25);
-            drawTumbleweed(400, canvas.height * 0.7, 30);
-            drawTumbleweed(500, canvas.height * 0.5, 20);
+            drawTumbleweed(120, canvas.height * 0.3, 18);
+            drawTumbleweed(250, canvas.height * 0.45, 32);
+            drawTumbleweed(450, canvas.height * 0.35, 24);
+            drawTumbleweed(180, canvas.height * 0.6, 28);
+            drawTumbleweed(520, canvas.height * 0.55, 20);
+            drawTumbleweed(80, canvas.height * 0.5, 26);
+            drawTumbleweed(350, canvas.height * 0.25, 22);
+            drawTumbleweed(410, canvas.height * 0.65, 30);
+            drawTumbleweed(300, canvas.height * 0.7, 19);
+            drawTumbleweed(550, canvas.height * 0.4, 25);
+            drawTumbleweed(50, canvas.height * 0.7, 23);
+            drawTumbleweed(200, canvas.height * 0.8, 27);
+          } else if ('${sceneType}' === 'beeple-astronaut') {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(0.3, '#ee5a6f');
+            gradient.addColorStop(0.6, '#f4a460');
+            gradient.addColorStop(1, '#d2691e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#c19a6b';
+            ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
+            const astronautCenterX = canvas.width * 0.7;
+            const astronautBottomY = canvas.height * 0.7;
+            ctx.fillStyle = '#1a1a1a';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.fillRect(astronautCenterX - 35, astronautBottomY - 120, 25, 120);
+            ctx.fillRect(astronautCenterX + 10, astronautBottomY - 120, 25, 120);
+            ctx.fillRect(astronautCenterX - 40, astronautBottomY - 15, 35, 15);
+            ctx.fillRect(astronautCenterX + 5, astronautBottomY - 15, 35, 15);
+            ctx.fillRect(astronautCenterX - 50, astronautBottomY - 200, 100, 80);
+            ctx.fillRect(astronautCenterX - 70, astronautBottomY - 190, 20, 60);
+            ctx.fillRect(astronautCenterX + 50, astronautBottomY - 185, 20, 55);
+            ctx.fillStyle = '#2a2a2a';
+            ctx.fillRect(astronautCenterX - 35, astronautBottomY - 195, 70, 40);
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.arc(astronautCenterX, astronautBottomY - 230, 55, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#3a3a3a';
+            ctx.beginPath();
+            ctx.arc(astronautCenterX, astronautBottomY - 230, 40, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#5a5a5a';
+            ctx.beginPath();
+            ctx.arc(astronautCenterX - 10, astronautBottomY - 240, 15, 0, Math.PI * 2);
+            ctx.fill();
           }
         }
       `;
@@ -1307,7 +1457,15 @@ export default function Home() {
         };
         let isDrawing = false; let mousePos = { x: 0, y: 0 };
         const particles = []; const figurePath = [];
-        const centerX = canvas.width / 2; const centerY = canvas.height / 2;
+        let centerX = canvas.width / 2;
+        let centerY = canvas.height / 2;
+        if (config.sceneType === 'beeple-astronaut') {
+          centerX = canvas.width * 0.28;
+          centerY = canvas.height * 0.28;
+        } else if (config.sceneType === 'judd-building' || config.sceneType === 'desert-landscape') {
+          centerX = canvas.width / 2;
+          centerY = canvas.height * 0.35;
+        }
         ${shapeCode}
         ${sceneRenderCode}
         for (let i = 0; i < config.particleCount; i++) {
@@ -1358,7 +1516,8 @@ export default function Home() {
                         const distance = Math.sqrt(dx * dx + dy * dy);
                         if (distance < config.connectionDistance) {
                             const alpha = (1 - distance / config.connectionDistance) * 0.7;
-                            ctx.strokeStyle = config.particleColor; ctx.globalAlpha = alpha;
+                            const lineColor = particles[i].color || config.particleColor;
+                            ctx.strokeStyle = lineColor; ctx.globalAlpha = alpha;
                             ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
                         }
                     }
@@ -1382,8 +1541,9 @@ export default function Home() {
                 particle.vx *= 0.92; particle.vy *= 0.92; particle.x += particle.vx; particle.y += particle.vy;
                 particle.trail.unshift({ x: particle.x, y: particle.y });
                 if (particle.trail.length > config.trailLength) particle.trail.pop();
+                const currentColor = particle.color || config.particleColor;
                 if (particle.trail.length > 1) {
-                    ctx.strokeStyle = config.particleColor; ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = currentColor; ctx.lineWidth = 2.5;
                     for (let i = 0; i < particle.trail.length - 1; i++) {
                         const alpha = (1 - i / particle.trail.length) * 0.6; ctx.globalAlpha = alpha;
                         ctx.beginPath(); ctx.moveTo(particle.trail[i].x, particle.trail[i].y);
@@ -1391,8 +1551,8 @@ export default function Home() {
                     }
                 }
                 ctx.globalAlpha = 1;
-                if (config.glowIntensity > 0) { ctx.shadowBlur = 40 * config.glowIntensity; ctx.shadowColor = config.particleColor; }
-                ctx.fillStyle = config.particleColor;
+                if (config.glowIntensity > 0) { ctx.shadowBlur = 40 * config.glowIntensity; ctx.shadowColor = currentColor; }
+                ctx.fillStyle = currentColor;
                 ctx.beginPath(); ctx.arc(particle.x, particle.y, config.particleSize, 0, Math.PI * 2); ctx.fill();
                 ctx.shadowBlur = 0;
             });
@@ -1454,13 +1614,17 @@ export default function Home() {
       const animationUri = uris[1];
       
       const displayNumber = Math.floor(Math.random() * 9999) + 1;
+      const shapeDisplayName = shapeType === 'rainbow-thing' 
+        ? 'Rainbow Thing (NOT a Squiggle)' 
+        : shapeType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      
       const metadata = {
         name: `Marfa Particle Art #${displayNumber}`,
         description: `An interactive desert-inspired particle artwork from Marfa, Texas. Created on ${new Date().toLocaleDateString()}. Click and drag to interact with the particles!`,
         image: imageUri,
         animation_url: animationUri,
         attributes: [
-          { trait_type: "Shape", value: shapeType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') },
+          { trait_type: "Shape", value: shapeDisplayName },
           { trait_type: "Scene", value: sceneType === 'none' ? 'None' : sceneType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') },
           { trait_type: "Particle Color", value: particleColor },
           { trait_type: "Background Color", value: backgroundColor },
@@ -1762,6 +1926,7 @@ export default function Home() {
                   <option value="prada-marfa">PRADA MARFA</option>
                   <option value="judd-building">JUDD BUILDING</option>
                   <option value="tumbleweed-desert">TUMBLEWEED DESERT</option>
+                  <option value="beeple-astronaut">BEEPLE ASTRONAUT</option>
                 </select>
               </div>
 
@@ -1901,6 +2066,7 @@ export default function Home() {
                   <option value="rock-formation">ROCK FORMATION</option>
                   <option value="desert-star">DESERT STAR</option>
                   <option value="marfa-lights">MARFA LIGHTS</option>
+                  <option value="rainbow-thing">RAINBOW THING (NOT A SQUIGGLE)</option>
                 </select>
               </div>
 
