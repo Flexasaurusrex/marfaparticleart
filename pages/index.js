@@ -26,7 +26,6 @@ export default function Home() {
   const [shapeType, setShapeType] = useState('saguaro');
   const [connectionDistance, setConnectionDistance] = useState(0);
   
-  // NEW: Desert scene background
   const [sceneType, setSceneType] = useState('none');
   
   const [capturedImage, setCapturedImage] = useState(null);
@@ -147,7 +146,6 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [historyIndex, designHistory]);
 
-  // IMPROVED SHAPES - Much more recognizable!
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -157,7 +155,6 @@ export default function Home() {
     canvas.height = 600;
 
     const figurePath = [];
-    // Position particles in upper portion for scenes with ground elements
     let centerX = canvas.width / 2;
     let centerY = canvas.height / 2;
     
@@ -166,30 +163,25 @@ export default function Home() {
       centerY = canvas.height * 0.28;
     } else if (sceneType === 'judd-building' || sceneType === 'desert-landscape') {
       centerX = canvas.width / 2;
-      centerY = canvas.height * 0.35; // Float above the buildings/mountains
+      centerY = canvas.height * 0.35;
     }
     
     if (shapeType === 'saguaro') {
-      // IMPROVED: Tall realistic saguaro with 3 arms at different heights
-      // Main trunk
       for (let i = 0; i <= 80; i++) {
         figurePath.push({ x: centerX, y: centerY - 140 + i * 3 });
       }
-      // Left arm - lower
       for (let i = 0; i <= 30; i++) {
         figurePath.push({ x: centerX - i * 2.5, y: centerY - 20 + i * 1.5 });
       }
       for (let i = 0; i <= 40; i++) {
         figurePath.push({ x: centerX - 75, y: centerY + 25 - i * 2 });
       }
-      // Right arm - higher
       for (let i = 0; i <= 35; i++) {
         figurePath.push({ x: centerX + i * 2.3, y: centerY - 60 + i * 1.2 });
       }
       for (let i = 0; i <= 50; i++) {
         figurePath.push({ x: centerX + 80, y: centerY - 18 - i * 2.5 });
       }
-      // Small right arm - mid height
       for (let i = 0; i <= 20; i++) {
         figurePath.push({ x: centerX + i * 1.8, y: centerY + 10 + i * 0.8 });
       }
@@ -197,8 +189,6 @@ export default function Home() {
         figurePath.push({ x: centerX + 36, y: centerY + 26 - i * 2 });
       }
     } else if (shapeType === 'coyote') {
-      // IMPROVED: Recognizable coyote side profile - howling
-      // Body
       for (let i = 0; i < 40; i++) {
         const t = (i / 40) * Math.PI * 0.6;
         figurePath.push({
@@ -206,49 +196,42 @@ export default function Home() {
           y: centerY + Math.sin(t) * 50 + 30
         });
       }
-      // Neck and head pointing up (howling)
       for (let i = 0; i <= 30; i++) {
         figurePath.push({ 
           x: centerX - 120 + i * 1.5, 
           y: centerY + 80 - i * 4 
         });
       }
-      // Snout
       for (let i = 0; i <= 15; i++) {
         figurePath.push({ 
           x: centerX - 75 + i * 2, 
           y: centerY - 40 - i * 1.5 
         });
       }
-      // Ears (pointy)
       for (let i = 0; i <= 10; i++) {
         figurePath.push({ 
           x: centerX - 90 + i, 
           y: centerY - 20 - i * 2.5 
         });
       }
-      // Back of head
       for (let i = 0; i <= 15; i++) {
         figurePath.push({ 
           x: centerX - 100 + i * 1.5, 
           y: centerY - 45 + i * 2 
         });
       }
-      // Front legs
       for (let i = 0; i <= 25; i++) {
         figurePath.push({ x: centerX - 50, y: centerY + 50 + i * 1.8 });
       }
       for (let i = 0; i <= 20; i++) {
         figurePath.push({ x: centerX - 30, y: centerY + 50 + i * 2 });
       }
-      // Back legs
       for (let i = 0; i <= 25; i++) {
         figurePath.push({ x: centerX + 40, y: centerY + 60 + i * 1.5 });
       }
       for (let i = 0; i <= 20; i++) {
         figurePath.push({ x: centerX + 60, y: centerY + 60 + i * 1.8 });
       }
-      // Tail (bushy, curved up)
       for (let i = 0; i <= 35; i++) {
         const t = (i / 35) * Math.PI * 0.5;
         figurePath.push({
@@ -257,8 +240,6 @@ export default function Home() {
         });
       }
     } else if (shapeType === 'roadrunner') {
-      // IMPROVED: Actual roadrunner bird profile
-      // Body (oval)
       for (let i = 0; i < 30; i++) {
         const angle = (i / 30) * Math.PI * 2;
         figurePath.push({
@@ -266,18 +247,15 @@ export default function Home() {
           y: centerY + Math.sin(angle) * 35
         });
       }
-      // Long tail feathers
       for (let i = 0; i <= 40; i++) {
         figurePath.push({ 
           x: centerX + 60 + i * 2, 
           y: centerY + 10 + Math.sin(i * 0.2) * 15 
         });
       }
-      // Neck
       for (let i = 0; i <= 15; i++) {
         figurePath.push({ x: centerX - 50 + i, y: centerY - 20 - i * 1.5 });
       }
-      // Head
       for (let i = 0; i < 20; i++) {
         const angle = (i / 20) * Math.PI * 2;
         figurePath.push({
@@ -285,15 +263,12 @@ export default function Home() {
           y: centerY - 40 + Math.sin(angle) * 15
         });
       }
-      // Beak (long and pointy)
       for (let i = 0; i <= 20; i++) {
         figurePath.push({ x: centerX - 63 - i * 2, y: centerY - 42 });
       }
-      // Crest (pointy feathers on head)
       for (let i = 0; i <= 10; i++) {
         figurePath.push({ x: centerX - 35 + i, y: centerY - 48 - i * 2 });
       }
-      // Legs (thin and fast)
       for (let i = 0; i <= 30; i++) {
         figurePath.push({ x: centerX - 20, y: centerY + 35 + i * 2 });
       }
@@ -301,7 +276,6 @@ export default function Home() {
         figurePath.push({ x: centerX + 10, y: centerY + 35 + i * 2 });
       }
     } else if (shapeType === 'prickly-pear') {
-      // IMPROVED: Stacked paddle cacti
       const pads = [
         { x: 0, y: -40, w: 40, h: 55 },
         { x: -35, y: 0, w: 45, h: 60 },
@@ -318,9 +292,7 @@ export default function Home() {
         }
       });
     } else if (shapeType === 'desert-flower') {
-      // IMPROVED: 5-petal flower with visible center
       const petals = 5;
-      // Center
       for (let i = 0; i < 20; i++) {
         const angle = (i / 20) * Math.PI * 2;
         figurePath.push({
@@ -328,7 +300,6 @@ export default function Home() {
           y: centerY + Math.sin(angle) * 20
         });
       }
-      // Petals
       for (let i = 0; i < 100; i++) {
         const angle = (i / 100) * Math.PI * 2;
         const r = 50 + Math.sin(petals * angle) * 60;
@@ -338,7 +309,6 @@ export default function Home() {
         });
       }
     } else if (shapeType === 'tumbleweed') {
-      // IMPROVED: More chaotic/spiky tumbleweed
       for (let i = 0; i < 120; i++) {
         const angle = (i / 120) * Math.PI * 2;
         const r = 70 + Math.sin(i * 0.7) * 35 + Math.sin(i * 1.3) * 20;
@@ -348,39 +318,30 @@ export default function Home() {
         });
       }
     } else if (shapeType === 'mesa') {
-      // IMPROVED: Layered mesa with cliff face
       const width = 220;
       const height = 90;
-      // Bottom slope
       for (let i = 0; i <= 15; i++) {
         figurePath.push({ x: centerX - width/2 + i * 3, y: centerY + height - i * 2 });
       }
-      // Left cliff
       for (let i = 0; i <= 30; i++) {
         figurePath.push({ x: centerX - width/2 + 45, y: centerY + height - 30 - i * 5 });
       }
-      // Top flat
       for (let i = 0; i <= 40; i++) {
         figurePath.push({ x: centerX - width/2 + 45 + i * 4, y: centerY - height });
       }
-      // Right cliff
       for (let i = 0; i <= 30; i++) {
         figurePath.push({ x: centerX + width/2 - 15, y: centerY - height + i * 5 });
       }
-      // Bottom slope right
       for (let i = 0; i <= 15; i++) {
         figurePath.push({ x: centerX + width/2 - 15 + i * 3, y: centerY + height - 80 + i * 3 });
       }
     } else if (shapeType === 'sand-dune') {
-      // IMPROVED: Multiple rolling dunes
       for (let i = 0; i < 150; i++) {
         const x = centerX - 180 + i * 2.4;
         const y = centerY + Math.sin((i / 150) * Math.PI * 3) * 50 + Math.sin((i / 150) * Math.PI * 7) * 20 - 10;
         figurePath.push({ x, y });
       }
     } else if (shapeType === 'desert-sun') {
-      // IMPROVED: Sun with varied ray lengths
-      // Core
       for (let i = 0; i < 30; i++) {
         const angle = (i / 30) * Math.PI * 2;
         figurePath.push({
@@ -388,7 +349,6 @@ export default function Home() {
           y: centerY + Math.sin(angle) * 40
         });
       }
-      // Rays
       for (let ray = 0; ray < 12; ray++) {
         const angle = (ray / 12) * Math.PI * 2;
         const rayLength = ray % 2 === 0 ? 80 : 60;
@@ -401,7 +361,6 @@ export default function Home() {
         }
       }
     } else if (shapeType === 'crescent-moon') {
-      // IMPROVED: Thinner crescent
       for (let i = 0; i < 100; i++) {
         const t = (i / 100) * Math.PI * 1.6;
         const r = 95;
@@ -419,7 +378,6 @@ export default function Home() {
         });
       }
     } else if (shapeType === 'yucca') {
-      // IMPROVED: More dramatic spiky leaves
       const leaves = 12;
       for (let leaf = 0; leaf < leaves; leaf++) {
         const angle = (leaf / leaves) * Math.PI * 2;
@@ -432,7 +390,6 @@ export default function Home() {
         }
       }
     } else if (shapeType === 'agave') {
-      // IMPROVED: Tighter spiral with more leaves
       for (let i = 0; i < 150; i++) {
         const angle = (i / 150) * Math.PI * 6;
         const r = 25 + i * 0.65;
@@ -442,7 +399,6 @@ export default function Home() {
         });
       }
     } else if (shapeType === 'rock-formation') {
-      // IMPROVED: More varied boulder sizes
       const rocks = [
         { cx: centerX - 40, cy: centerY - 50, r: 45 },
         { cx: centerX + 50, cy: centerY - 40, r: 55 },
@@ -461,7 +417,6 @@ export default function Home() {
         }
       });
     } else if (shapeType === 'desert-star') {
-      // IMPROVED: Sharper 5-point star
       const spikes = 5;
       const outerRadius = 130;
       const innerRadius = 50;
@@ -474,7 +429,6 @@ export default function Home() {
         });
       }
     } else if (shapeType === 'marfa-lights') {
-      // IMPROVED: More mysterious floating orbs at different sizes
       const orbs = [
         { x: -80, y: -30, r: 30 },
         { x: -30, y: 20, r: 25 },
@@ -492,9 +446,6 @@ export default function Home() {
         }
       });
     } else if (shapeType === 'rainbow-thing') {
-      // Rainbow Thing (NOT a Squiggle) - for Art Blocks event 🌈
-      // Definitely not a squiggle. Nope. Totally different.
-      // CENTERED on canvas - shifted right to stay fully visible
       for (let i = 0; i <= 150; i++) {
         const x = centerX - 155 + i * 2.6;
         const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
@@ -516,10 +467,9 @@ export default function Home() {
       const pathIndex = Math.floor((i / particleCount) * figurePath.length);
       const pos = figurePath[pathIndex];
       
-      // Rainbow gradient for rainbow-thing shape
       let particleColorOverride = null;
       if (shapeType === 'rainbow-thing') {
-        const hue = (i / particleCount) * 360; // 0-360 degrees around color wheel
+        const hue = (i / particleCount) * 360;
         particleColorOverride = `hsl(${hue}, 100%, 60%)`;
       }
       
@@ -532,19 +482,17 @@ export default function Home() {
         vy: 0,
         pathIndex: pathIndex,
         trail: [],
-        color: particleColorOverride // Store individual color if rainbow
+        color: particleColorOverride
       });
     }
     
     setParticles(newParticles);
   }, [particleCount, shapeType]);
 
-  // NEW: Render desert scene backgrounds
   const renderScene = (ctx, canvas) => {
     if (sceneType === 'none') return;
     
     if (sceneType === 'sunset-sky') {
-      // Orange/red sunset gradient - FILLS ENTIRE CANVAS
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#ff6b35');
       gradient.addColorStop(0.3, '#ff8c42');
@@ -555,14 +503,12 @@ export default function Home() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
     } else if (sceneType === 'starry-night') {
-      // Dark sky with stars - FILLS ENTIRE CANVAS
       const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width * 0.7);
       gradient.addColorStop(0, '#0a0624');
       gradient.addColorStop(1, '#000000');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Stars scattered across ENTIRE canvas
       ctx.fillStyle = 'white';
       for (let i = 0; i < 100; i++) {
         const x = Math.random() * canvas.width;
@@ -576,14 +522,12 @@ export default function Home() {
       ctx.globalAlpha = 1;
       
     } else if (sceneType === 'desert-landscape') {
-      // Sky
       const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.6);
       skyGradient.addColorStop(0, '#87CEEB');
       skyGradient.addColorStop(1, '#f4a460');
       ctx.fillStyle = skyGradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height * 0.6);
       
-      // Mountains (layered)
       ctx.fillStyle = '#8b7355';
       ctx.beginPath();
       ctx.moveTo(0, canvas.height * 0.6);
@@ -606,45 +550,35 @@ export default function Home() {
       ctx.lineTo(canvas.width, canvas.height * 0.65);
       ctx.fill();
       
-      // Desert floor
       ctx.fillStyle = '#d2691e';
       ctx.fillRect(0, canvas.height * 0.65, canvas.width, canvas.height * 0.35);
       
     } else if (sceneType === 'prada-marfa') {
-      // Sky
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#87CEEB');
       gradient.addColorStop(1, '#f4a460');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Desert floor
       ctx.fillStyle = '#d2b48c';
       ctx.fillRect(0, canvas.height * 0.75, canvas.width, canvas.height * 0.25);
       
-      // Prada Marfa building at BOTTOM - particles float above
       const buildingW = 200;
       const buildingH = 90;
       const buildingX = canvas.width / 2 - buildingW / 2;
       const buildingY = canvas.height - buildingH;
       
-      // Building
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(buildingX, buildingY, buildingW, buildingH);
       
-      // Roof overhang
       ctx.fillStyle = '#000000';
       ctx.fillRect(buildingX - 10, buildingY - 8, buildingW + 20, 8);
       
-      // Door
-      ctx.fillStyle = '#000000';
       ctx.fillRect(buildingX + buildingW/2 - 18, buildingY + 25, 36, 65);
       
-      // Windows
       ctx.fillRect(buildingX + 25, buildingY + 18, 32, 32);
       ctx.fillRect(buildingX + buildingW - 57, buildingY + 18, 32, 32);
       
-      // PRADA text
       ctx.font = 'bold 22px Arial';
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';
@@ -653,18 +587,15 @@ export default function Home() {
       ctx.fillText('MARFA', canvas.width / 2, canvas.height - 8);
       
     } else if (sceneType === 'judd-building') {
-      // Sky
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#708090');
       gradient.addColorStop(1, '#8b7355');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Desert floor
       ctx.fillStyle = '#cd853f';
       ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
       
-      // Donald Judd concrete boxes (minimalist)
       const boxes = [
         { x: 100, y: 350, w: 100, h: 80 },
         { x: 230, y: 370, w: 90, h: 60 },
@@ -672,21 +603,17 @@ export default function Home() {
       ];
       
       boxes.forEach(box => {
-        // Main box
         ctx.fillStyle = '#a9a9a9';
         ctx.fillRect(box.x, box.y, box.w, box.h);
         
-        // Shadow/depth
         ctx.fillStyle = '#696969';
         ctx.fillRect(box.x + 5, box.y + 5, box.w, box.h);
         
-        // Highlight
         ctx.fillStyle = '#c0c0c0';
         ctx.fillRect(box.x, box.y, box.w - 5, box.h - 5);
       });
       
     } else if (sceneType === 'tumbleweed-desert') {
-      // Empty flat desert with rolling tumbleweeds
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#87CEEB');
       gradient.addColorStop(0.5, '#f4a460');
@@ -694,7 +621,6 @@ export default function Home() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Simple tumbleweed function
       const drawTumbleweed = (x, y, size) => {
         ctx.strokeStyle = '#8b7355';
         ctx.lineWidth = 2;
@@ -710,7 +636,6 @@ export default function Home() {
         }
       };
       
-      // Lots of tumbleweeds at different sizes and positions
       drawTumbleweed(120, canvas.height * 0.3, 18);
       drawTumbleweed(250, canvas.height * 0.45, 32);
       drawTumbleweed(450, canvas.height * 0.35, 24);
@@ -724,8 +649,6 @@ export default function Home() {
       drawTumbleweed(50, canvas.height * 0.7, 23);
       drawTumbleweed(200, canvas.height * 0.8, 27);
     } else if (sceneType === 'beeple-astronaut') {
-      // GIANT BEEPLE ASTRONAUT in the desert!
-      // Sky gradient
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, '#ff6b6b');
       gradient.addColorStop(0.3, '#ee5a6f');
@@ -734,11 +657,9 @@ export default function Home() {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Desert floor
       ctx.fillStyle = '#c19a6b';
       ctx.fillRect(0, canvas.height * 0.7, canvas.width, canvas.height * 0.3);
       
-      // GIANT ASTRONAUT SILHOUETTE
       const astronautCenterX = canvas.width * 0.7;
       const astronautBottomY = canvas.height * 0.7;
       const astronautHeight = 280;
@@ -748,39 +669,31 @@ export default function Home() {
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
       
-      // Legs
       ctx.fillRect(astronautCenterX - 35, astronautBottomY - 120, 25, 120);
       ctx.fillRect(astronautCenterX + 10, astronautBottomY - 120, 25, 120);
       
-      // Boots
       ctx.fillRect(astronautCenterX - 40, astronautBottomY - 15, 35, 15);
       ctx.fillRect(astronautCenterX + 5, astronautBottomY - 15, 35, 15);
       
-      // Body/Torso
       ctx.fillRect(astronautCenterX - 50, astronautBottomY - 200, 100, 80);
       
-      // Arms
       ctx.fillRect(astronautCenterX - 70, astronautBottomY - 190, 20, 60);
       ctx.fillRect(astronautCenterX + 50, astronautBottomY - 185, 20, 55);
       
-      // Chest pack
       ctx.fillStyle = '#2a2a2a';
       ctx.fillRect(astronautCenterX - 35, astronautBottomY - 195, 70, 40);
       
-      // Helmet (large round)
       ctx.fillStyle = '#1a1a1a';
       ctx.beginPath();
       ctx.arc(astronautCenterX, astronautBottomY - 230, 55, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
       
-      // Helmet visor (reflective - lighter)
       ctx.fillStyle = '#3a3a3a';
       ctx.beginPath();
       ctx.arc(astronautCenterX, astronautBottomY - 230, 40, 0, Math.PI * 2);
       ctx.fill();
       
-      // Visor reflection
       ctx.fillStyle = '#5a5a5a';
       ctx.beginPath();
       ctx.arc(astronautCenterX - 10, astronautBottomY - 240, 15, 0, Math.PI * 2);
@@ -796,10 +709,8 @@ export default function Home() {
     const figurePath = figurePathRef.current;
 
     const animate = () => {
-      // 1. Render scene background FIRST (behind everything)
       renderScene(ctx, canvas);
       
-      // 2. Then render gradient/solid background if scene is 'none'
       if (sceneType === 'none') {
         if (gradientType === 'radial') {
           const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width/2);
@@ -817,7 +728,6 @@ export default function Home() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // 3. Render connection lines
       if (connectionDistance > 0) {
         ctx.lineWidth = 1.5;
         
@@ -842,7 +752,6 @@ export default function Home() {
         ctx.globalAlpha = 1;
       }
 
-      // 4. Render particles with trails
       particles.forEach((particle) => {
         particle.pathIndex = (particle.pathIndex + animationSpeed) % figurePath.length;
         const targetPos = figurePath[Math.floor(particle.pathIndex)];
@@ -1089,7 +998,6 @@ export default function Home() {
   };
 
   const generateInteractiveHTML = () => {
-    // Generate complete shape code for HTML
     let shapeCode = '';
     
     if (shapeType === 'saguaro') {
@@ -1250,13 +1158,12 @@ export default function Home() {
         });`;
     } else if (shapeType === 'rainbow-thing') {
       shapeCode = `for (let i = 0; i <= 150; i++) {
-          const x = centerX - 155 + i * 2.6;
+          const x = centerX - 170 + i * 2.6;
           const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
           figurePath.push({ x, y });
         }`;
     }
 
-    // Generate scene rendering code
     let sceneRenderCode = '';
     if (sceneType !== 'none') {
       sceneRenderCode = `
@@ -1471,7 +1378,22 @@ export default function Home() {
         for (let i = 0; i < config.particleCount; i++) {
             const pathIndex = Math.floor((i / config.particleCount) * figurePath.length);
             const pos = figurePath[pathIndex];
-            particles.push({ x: pos.x, y: pos.y, vx: 0, vy: 0, pathIndex: pathIndex, trail: [] });
+            
+            let particleColorOverride = null;
+            if (config.shapeType === 'rainbow-thing') {
+                const hue = (i / config.particleCount) * 360;
+                particleColorOverride = 'hsl(' + hue + ', 100%, 60%)';
+            }
+            
+            particles.push({ 
+                x: pos.x, 
+                y: pos.y, 
+                vx: 0, 
+                vy: 0, 
+                pathIndex: pathIndex, 
+                trail: [],
+                color: particleColorOverride
+            });
         }
         function updateMousePos(e) {
             const rect = canvas.getBoundingClientRect();
@@ -1525,6 +1447,8 @@ export default function Home() {
                 ctx.globalAlpha = 1;
             }
             particles.forEach(particle => {
+                const currentColor = particle.color || config.particleColor;
+                
                 particle.pathIndex = (particle.pathIndex + config.animationSpeed) % figurePath.length;
                 const targetPos = figurePath[Math.floor(particle.pathIndex)];
                 const dx = targetPos.x - particle.x; const dy = targetPos.y - particle.y;
@@ -1541,7 +1465,7 @@ export default function Home() {
                 particle.vx *= 0.92; particle.vy *= 0.92; particle.x += particle.vx; particle.y += particle.vy;
                 particle.trail.unshift({ x: particle.x, y: particle.y });
                 if (particle.trail.length > config.trailLength) particle.trail.pop();
-                const currentColor = particle.color || config.particleColor;
+                
                 if (particle.trail.length > 1) {
                     ctx.strokeStyle = currentColor; ctx.lineWidth = 2.5;
                     for (let i = 0; i < particle.trail.length - 1; i++) {
@@ -1681,16 +1605,6 @@ export default function Home() {
         <title>Marfa Particle Art - Desert NFT Collection</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://artmarfa.xyz" />
-        <meta property="og:title" content="Marfa Particle Art - Desert NFT Collection" />
-        <meta property="og:description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
-        <meta property="og:image" content="https://artmarfa.xyz/social.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content="https://artmarfa.xyz" />
-        <meta name="twitter:title" content="Marfa Particle Art - Desert NFT Collection" />
-        <meta name="twitter:description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
-        <meta name="twitter:image" content="https://artmarfa.xyz/social.png" />
       </Head>
       
       <div style={{ 
@@ -1708,7 +1622,7 @@ export default function Home() {
             marginBottom: '20px',
             flexWrap: 'wrap',
             gap: '15px'
-          }} className="header">
+          }}>
             <div style={{ textAlign: 'left' }}>
               <h1 style={{ 
                 fontSize: '48px', 
@@ -1739,7 +1653,6 @@ export default function Home() {
 
           {address && (
             <div 
-              className="wallet-status"
               style={{ 
                 background: isCorrectChain ? 'rgba(255, 165, 0, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                 border: isCorrectChain ? '1px solid rgba(255, 165, 0, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
@@ -1771,7 +1684,6 @@ export default function Home() {
                       showToast('Failed to switch network', 'error');
                     }
                   }}
-                  className="switch-network-btn"
                   style={{
                     padding: '8px 16px',
                     background: 'linear-gradient(135deg, #ffa500 0%, #ff6b35 100%)',
@@ -1795,14 +1707,14 @@ export default function Home() {
             gridTemplateColumns: '280px 1fr', 
             gap: '20px',
             alignItems: 'start'
-          }} className="main-grid">
+          }}>
             
             <div style={{ 
               background: 'rgba(255,165,0,0.05)',
               border: '1px solid rgba(255,165,0,0.2)',
               borderRadius: '8px',
               padding: '15px'
-            }} className="controls-panel">
+            }}>
               <h3 style={{ 
                 fontSize: '12px', 
                 letterSpacing: '2px',
@@ -1870,7 +1782,7 @@ export default function Home() {
                   display: 'grid', 
                   gridTemplateColumns: 'repeat(3, 1fr)',
                   gap: '6px'
-                }} className="preset-buttons">
+                }}>
                   {Object.entries(presets).map(([name, preset]) => (
                     <button
                       key={name}
@@ -2301,7 +2213,7 @@ export default function Home() {
                   gridTemplateColumns: 'repeat(3, 1fr)',
                   gap: '15px',
                   marginBottom: '15px'
-                }} className="advanced-grid">
+                }}>
                   <div>
                     <label style={{ 
                       display: 'flex',
@@ -2380,7 +2292,7 @@ export default function Home() {
                   display: 'grid', 
                   gridTemplateColumns: 'repeat(3, 1fr)',
                   gap: '15px'
-                }} className="advanced-grid">
+                }}>
                   <div>
                     <label style={{ 
                       display: 'flex',
@@ -2563,110 +2475,6 @@ export default function Home() {
           to {
             transform: translateX(0);
             opacity: 1;
-          }
-        }
-        
-        @media (max-width: 768px) {
-          .main-grid {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 15px !important;
-          }
-          
-          .controls-panel {
-            width: 100% !important;
-            max-width: 100% !important;
-            padding: 12px !important;
-          }
-          
-          .controls-panel h3 {
-            font-size: 11px !important;
-            margin-bottom: 12px !important;
-          }
-          
-          .controls-panel button {
-            font-size: 9px !important;
-            padding: 8px 6px !important;
-          }
-          
-          .controls-panel input[type="color"] {
-            height: 40px !important;
-          }
-          
-          .controls-panel select {
-            font-size: 10px !important;
-            padding: 8px !important;
-          }
-          
-          .controls-panel label {
-            font-size: 10px !important;
-          }
-          
-          .preset-buttons {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-          
-          .advanced-grid {
-            grid-template-columns: 1fr !important;
-            gap: 12px !important;
-          }
-          
-          .header {
-            flex-direction: column !important;
-            align-items: center !important;
-            text-align: center !important;
-            gap: 12px !important;
-          }
-          
-          .header h1 {
-            font-size: 32px !important;
-            letter-spacing: 4px !important;
-          }
-          
-          .header p {
-            font-size: 11px !important;
-            letter-spacing: 2px !important;
-          }
-          
-          .switch-network-btn {
-            width: 100% !important;
-            min-height: 44px !important;
-            padding: 12px 16px !important;
-            font-size: 10px !important;
-          }
-          
-          .wallet-status {
-            flex-direction: column !important;
-            text-align: center !important;
-            font-size: 10px !important;
-            padding: 12px 16px !important;
-          }
-          
-          div[style*="position: fixed"] {
-            top: 10px !important;
-            right: 10px !important;
-            left: 10px !important;
-            max-width: calc(100% - 20px) !important;
-          }
-          
-          div[style*="position: fixed"] > div {
-            font-size: 12px !important;
-            padding: 12px 16px !important;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .controls-panel {
-            padding: 10px !important;
-          }
-          
-          .header h1 {
-            font-size: 28px !important;
-            letter-spacing: 3px !important;
-          }
-          
-          .header p {
-            font-size: 10px !important;
           }
         }
       `}</style>
