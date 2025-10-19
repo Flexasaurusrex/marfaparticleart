@@ -1250,7 +1250,7 @@ export default function Home() {
         });`;
     } else if (shapeType === 'rainbow-thing') {
       shapeCode = `for (let i = 0; i <= 150; i++) {
-          const x = centerX - 170 + i * 2.6;
+          const x = centerX - 155 + i * 2.6;
           const y = centerY + Math.sin(i * 0.15) * 80 + Math.cos(i * 0.08) * 40;
           figurePath.push({ x, y });
         }`;
@@ -1471,7 +1471,15 @@ export default function Home() {
         for (let i = 0; i < config.particleCount; i++) {
             const pathIndex = Math.floor((i / config.particleCount) * figurePath.length);
             const pos = figurePath[pathIndex];
-            particles.push({ x: pos.x, y: pos.y, vx: 0, vy: 0, pathIndex: pathIndex, trail: [] });
+            
+            // Rainbow gradient for "Rainbow Thing (NOT a Squiggle)"
+            let color = config.particleColor;
+            if (config.shapeType === 'rainbow-thing') {
+              const hue = (i / config.particleCount) * 360;
+              color = \`hsl(\${hue}, 100%, 60%)\`;
+            }
+            
+            particles.push({ x: pos.x, y: pos.y, vx: 0, vy: 0, pathIndex: pathIndex, trail: [], color: color });
         }
         function updateMousePos(e) {
             const rect = canvas.getBoundingClientRect();
@@ -1682,11 +1690,15 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://artmarfa.xyz" />
         <meta property="og:title" content="Marfa Particle Art - Desert NFT Collection" />
         <meta property="og:description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:image" content="https://artmarfa.xyz/social.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://artmarfa.xyz" />
         <meta name="twitter:title" content="Marfa Particle Art - Desert NFT Collection" />
         <meta name="twitter:description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
+        <meta name="twitter:image" content="https://artmarfa.xyz/social.png" />
       </Head>
       
       <div style={{ 
@@ -2321,136 +2333,6 @@ export default function Home() {
                       style={{ width: '100%' }}
                     />
                   </div>
-
-                  <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
-                      <span>TRAIL</span>
-                      <span>{trailLength}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="20"
-                      max="100"
-                      value={trailLength}
-                      onChange={(e) => setTrailLength(parseInt(e.target.value))}
-                      onMouseUp={saveToHistory}
-                      onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
-                      <span>GLOW</span>
-                      <span>{glowIntensity.toFixed(1)}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="0"
-                      max="3"
-                      step="0.1"
-                      value={glowIntensity}
-                      onChange={(e) => setGlowIntensity(parseFloat(e.target.value))}
-                      onMouseUp={saveToHistory}
-                      onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '15px'
-                }} className="advanced-grid">
-                  <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
-                      <span>SIZE</span>
-                      <span>{particleSize.toFixed(1)}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="1"
-                      max="8"
-                      step="0.5"
-                      value={particleSize}
-                      onChange={(e) => setParticleSize(parseFloat(e.target.value))}
-                      onMouseUp={saveToHistory}
-                      onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
-                      <span>SPEED</span>
-                      <span>{animationSpeed.toFixed(2)}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="0.1"
-                      max="1"
-                      step="0.05"
-                      value={animationSpeed}
-                      onChange={(e) => setAnimationSpeed(parseFloat(e.target.value))}
-                      onMouseUp={saveToHistory}
-                      onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
-
-                  <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
-                      <span>CONNECTIONS</span>
-                      <span>{connectionDistance === 0 ? 'OFF' : connectionDistance}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="0"
-                      max="200"
-                      step="10"
-                      value={connectionDistance}
-                      onChange={(e) => setConnectionDistance(parseInt(e.target.value))}
-                      onMouseUp={saveToHistory}
-                      onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
-                    />
-                  </div>
                 </div>
               </div>
 
@@ -2668,4 +2550,134 @@ export default function Home() {
       `}</style>
     </>
   );
-}
+}}
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '11px', 
+                      letterSpacing: '1px',
+                      marginBottom: '8px',
+                      opacity: 0.6
+                    }}>
+                      <span>TRAIL</span>
+                      <span>{trailLength}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="20"
+                      max="100"
+                      value={trailLength}
+                      onChange={(e) => setTrailLength(parseInt(e.target.value))}
+                      onMouseUp={saveToHistory}
+                      onTouchEnd={saveToHistory}
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '11px', 
+                      letterSpacing: '1px',
+                      marginBottom: '8px',
+                      opacity: 0.6
+                    }}>
+                      <span>GLOW</span>
+                      <span>{glowIntensity.toFixed(1)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="3"
+                      step="0.1"
+                      value={glowIntensity}
+                      onChange={(e) => setGlowIntensity(parseFloat(e.target.value))}
+                      onMouseUp={saveToHistory}
+                      onTouchEnd={saveToHistory}
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: '15px'
+                }} className="advanced-grid">
+                  <div>
+                    <label style={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '11px', 
+                      letterSpacing: '1px',
+                      marginBottom: '8px',
+                      opacity: 0.6
+                    }}>
+                      <span>SIZE</span>
+                      <span>{particleSize.toFixed(1)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="8"
+                      step="0.5"
+                      value={particleSize}
+                      onChange={(e) => setParticleSize(parseFloat(e.target.value))}
+                      onMouseUp={saveToHistory}
+                      onTouchEnd={saveToHistory}
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '11px', 
+                      letterSpacing: '1px',
+                      marginBottom: '8px',
+                      opacity: 0.6
+                    }}>
+                      <span>SPEED</span>
+                      <span>{animationSpeed.toFixed(2)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0.1"
+                      max="1"
+                      step="0.05"
+                      value={animationSpeed}
+                      onChange={(e) => setAnimationSpeed(parseFloat(e.target.value))}
+                      onMouseUp={saveToHistory}
+                      onTouchEnd={saveToHistory}
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ 
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '11px', 
+                      letterSpacing: '1px',
+                      marginBottom: '8px',
+                      opacity: 0.6
+                    }}>
+                      <span>CONNECTIONS</span>
+                      <span>{connectionDistance === 0 ? 'OFF' : connectionDistance}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="200"
+                      step="10"
+                      value={connectionDistance}
+                      onChange={(e) => setConnectionDistance(parseInt(e.target.value))}
+                      onMouseUp={saveToHistory}
+                      onTouchEnd={saveToHistory
