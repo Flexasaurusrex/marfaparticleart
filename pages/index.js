@@ -25,7 +25,6 @@ export default function Home() {
   const [animationSpeed, setAnimationSpeed] = useState(0.3);
   const [shapeType, setShapeType] = useState('saguaro');
   const [connectionDistance, setConnectionDistance] = useState(0);
-  
   const [sceneType, setSceneType] = useState('none');
   
   const [capturedImage, setCapturedImage] = useState(null);
@@ -662,8 +661,6 @@ export default function Home() {
       
       const astronautCenterX = canvas.width * 0.7;
       const astronautBottomY = canvas.height * 0.7;
-      const astronautHeight = 280;
-      const astronautWidth = 140;
       
       ctx.fillStyle = '#1a1a1a';
       ctx.strokeStyle = '#000000';
@@ -1599,6 +1596,15 @@ export default function Home() {
     }
   };
 
+  const presets = [
+    ['sunset', presets.sunset],
+    ['night', presets.night],
+    ['desert', presets.desert],
+    ['cactus', presets.cactus],
+    ['marfa', presets.marfa],
+    ['heat', presets.heat]
+  ];
+
   return (
     <>
       <Head>
@@ -1607,67 +1613,27 @@ export default function Home() {
         <meta name="description" content="Create interactive desert-inspired particle art NFTs from Marfa, Texas on Base." />
       </Head>
       
-      <div style={{ 
-        minHeight: '100vh', 
-        background: 'linear-gradient(135deg, #2c1810 0%, #0a0604 100%)',
-        color: 'white',
-        padding: '15px',
-        overflowX: 'hidden'
-      }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginBottom: '20px',
-            flexWrap: 'wrap',
-            gap: '15px'
-          }}>
-            <div style={{ textAlign: 'left' }}>
-              <h1 style={{ 
-                fontSize: '48px', 
-                fontWeight: '300',
-                letterSpacing: '8px',
-                marginBottom: '5px',
-                margin: 0,
-                color: '#ffa500'
-              }}>
+      <div className="min-h-screen bg-gradient-to-br from-[#2c1810] to-[#0a0604] text-white p-4 md:p-6 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <div className="text-center md:text-left">
+              <h1 className="text-3xl md:text-5xl font-light tracking-[0.3em] md:tracking-[0.5em] text-[#ffa500] mb-1">
                 MARFA PARTICLE ART
               </h1>
-              <p style={{ 
-                fontSize: '14px', 
-                letterSpacing: '4px',
-                color: '#d4a574',
-                margin: 0
-              }}>
+              <p className="text-xs md:text-sm tracking-[0.2em] md:tracking-[0.25em] text-[#d4a574]">
                 DESERT NFT COLLECTION
               </p>
             </div>
-            <div>
-              <ConnectWallet 
-                theme="dark"
-                btnTitle="Connect Wallet"
-              />
+            <div className="scale-90 md:scale-100">
+              <ConnectWallet theme="dark" btnTitle="Connect Wallet" />
             </div>
           </div>
 
+          {/* Wallet Status */}
           {address && (
-            <div 
-              style={{ 
-                background: isCorrectChain ? 'rgba(255, 165, 0, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                border: isCorrectChain ? '1px solid rgba(255, 165, 0, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '8px',
-                padding: '12px 20px',
-                marginBottom: '15px',
-                fontSize: '12px',
-                letterSpacing: '1px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: '10px'
-              }}>
-              <div>
+            <div className={`${isCorrectChain ? 'bg-orange-500/10 border-orange-500/30' : 'bg-red-500/10 border-red-500/30'} border rounded-lg p-3 md:p-4 mb-4 text-xs md:text-sm tracking-wide flex flex-col md:flex-row justify-between items-center gap-3`}>
+              <div className="text-center md:text-left">
                 {isCorrectChain ? (
                   <>✓ Connected: {address.slice(0, 6)}...{address.slice(-4)} | Base Network</>
                 ) : (
@@ -1684,17 +1650,7 @@ export default function Home() {
                       showToast('Failed to switch network', 'error');
                     }
                   }}
-                  style={{
-                    padding: '8px 16px',
-                    background: 'linear-gradient(135deg, #ffa500 0%, #ff6b35 100%)',
-                    border: 'none',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '11px',
-                    fontWeight: 'bold',
-                    letterSpacing: '1px',
-                    cursor: 'pointer'
-                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 rounded text-white text-xs font-bold tracking-wide hover:from-orange-600 hover:to-orange-700 transition-all"
                 >
                   SWITCH TO BASE
                 </button>
@@ -1702,102 +1658,47 @@ export default function Home() {
             </div>
           )}
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: '280px 1fr', 
-            gap: '20px',
-            alignItems: 'start'
-          }}>
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 md:gap-6">
             
-            <div style={{ 
-              background: 'rgba(255,165,0,0.05)',
-              border: '1px solid rgba(255,165,0,0.2)',
-              borderRadius: '8px',
-              padding: '15px'
-            }}>
-              <h3 style={{ 
-                fontSize: '12px', 
-                letterSpacing: '2px',
-                marginBottom: '15px',
-                opacity: 0.7,
-                margin: '0 0 15px 0',
-                color: '#ffa500'
-              }}>
+            {/* Controls Panel */}
+            <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4 order-2 lg:order-1">
+              <h3 className="text-xs md:text-sm tracking-wider mb-4 opacity-70 text-orange-400">
                 DESERT CONTROLS
               </h3>
 
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: '1fr 1fr',
-                gap: '8px',
-                marginBottom: '15px'
-              }}>
+              {/* Undo/Redo */}
+              <div className="grid grid-cols-2 gap-2 mb-4">
                 <button
                   onClick={undo}
                   disabled={historyIndex <= 0}
-                  style={{
-                    padding: '10px',
-                    background: historyIndex <= 0 ? 'rgba(100,100,100,0.3)' : 'rgba(255,165,0,0.1)',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '10px',
-                    letterSpacing: '1px',
-                    cursor: historyIndex <= 0 ? 'not-allowed' : 'pointer',
-                    opacity: historyIndex <= 0 ? 0.5 : 1
-                  }}
+                  className={`p-2.5 md:p-3 ${historyIndex <= 0 ? 'bg-gray-700/30' : 'bg-orange-500/10'} border border-orange-500/30 rounded text-white text-xs tracking-wide transition-all ${historyIndex <= 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-500/20'}`}
                 >
                   ↶ UNDO
                 </button>
                 <button
                   onClick={redo}
                   disabled={historyIndex >= designHistory.length - 1}
-                  style={{
-                    padding: '10px',
-                    background: historyIndex >= designHistory.length - 1 ? 'rgba(100,100,100,0.3)' : 'rgba(255,165,0,0.1)',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '10px',
-                    letterSpacing: '1px',
-                    cursor: historyIndex >= designHistory.length - 1 ? 'not-allowed' : 'pointer',
-                    opacity: historyIndex >= designHistory.length - 1 ? 0.5 : 1
-                  }}
+                  className={`p-2.5 md:p-3 ${historyIndex >= designHistory.length - 1 ? 'bg-gray-700/30' : 'bg-orange-500/10'} border border-orange-500/30 rounded text-white text-xs tracking-wide transition-all ${historyIndex >= designHistory.length - 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-500/20'}`}
                 >
                   REDO ↷
                 </button>
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  fontSize: '11px', 
-                  letterSpacing: '1px',
-                  marginBottom: '8px',
-                  opacity: 0.6
-                }}>
+              {/* Presets */}
+              <div className="mb-4">
+                <label className="block text-xs md:text-[11px] tracking-wide mb-2 opacity-60">
                   DESERT PRESETS
                 </label>
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '6px'
-                }}>
+                <div className="grid grid-cols-3 gap-2">
                   {Object.entries(presets).map(([name, preset]) => (
                     <button
                       key={name}
                       onClick={() => applyPreset(preset)}
+                      className="p-2 md:p-2.5 border border-orange-500/30 rounded text-[9px] md:text-[8px] font-bold tracking-wide uppercase hover:scale-105 transition-transform"
                       style={{
-                        padding: '8px 4px',
                         background: `linear-gradient(135deg, ${preset.backgroundColor} 0%, ${preset.backgroundColor2} 100%)`,
-                        border: '1px solid rgba(255,165,0,0.3)',
-                        borderRadius: '4px',
                         color: preset.particleColor,
-                        fontSize: '8px',
-                        fontWeight: 'bold',
-                        letterSpacing: '0.5px',
-                        cursor: 'pointer',
-                        textTransform: 'uppercase',
                         textShadow: '0 0 5px rgba(0,0,0,0.8)'
                       }}
                     >
@@ -1807,14 +1708,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  fontSize: '11px', 
-                  letterSpacing: '1px',
-                  marginBottom: '8px',
-                  opacity: 0.6
-                }}>
+              {/* Scene Type */}
+              <div className="mb-4">
+                <label className="block text-xs md:text-[11px] tracking-wide mb-2 opacity-60">
                   DESERT SCENE
                 </label>
                 <select
@@ -1823,17 +1719,7 @@ export default function Home() {
                     saveToHistory();
                     setSceneType(e.target.value);
                   }}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: 'rgba(255,165,0,0.1)',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '10px',
-                    letterSpacing: '1px',
-                    cursor: 'pointer'
-                  }}
+                  className="w-full p-2.5 md:p-3 bg-orange-500/10 border border-orange-500/30 rounded text-white text-xs md:text-[10px] tracking-wide cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50"
                 >
                   <option value="none">NONE (GRADIENT/SOLID)</option>
                   <option value="sunset-sky">SUNSET SKY</option>
@@ -1846,14 +1732,9 @@ export default function Home() {
                 </select>
               </div>
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  fontSize: '11px', 
-                  letterSpacing: '1px',
-                  marginBottom: '8px',
-                  opacity: 0.6
-                }}>
+              {/* Particle Color */}
+              <div className="mb-4">
+                <label className="block text-xs md:text-[11px] tracking-wide mb-2 opacity-60">
                   PARTICLE COLOR
                 </label>
                 <input
@@ -1861,25 +1742,14 @@ export default function Home() {
                   value={particleColor}
                   onChange={(e) => setParticleColor(e.target.value)}
                   onBlur={saveToHistory}
-                  style={{ 
-                    width: '100%', 
-                    height: '35px',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
+                  className="w-full h-10 md:h-12 border border-orange-500/30 rounded cursor-pointer"
                 />
               </div>
 
+              {/* Background Controls */}
               {sceneType === 'none' && (
-                <div style={{ marginBottom: '15px' }}>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '11px', 
-                    letterSpacing: '1px',
-                    marginBottom: '8px',
-                    opacity: 0.6
-                  }}>
+                <div className="mb-4">
+                  <label className="block text-xs md:text-[11px] tracking-wide mb-2 opacity-60">
                     BACKGROUND
                   </label>
                   <input
@@ -1887,14 +1757,7 @@ export default function Home() {
                     value={backgroundColor}
                     onChange={(e) => setBackgroundColor(e.target.value)}
                     onBlur={saveToHistory}
-                    style={{ 
-                      width: '100%', 
-                      height: '35px',
-                      border: '1px solid rgba(255,165,0,0.3)',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      marginBottom: '8px'
-                    }}
+                    className="w-full h-10 md:h-12 border border-orange-500/30 rounded cursor-pointer mb-2"
                   />
                   
                   <select
@@ -1903,18 +1766,7 @@ export default function Home() {
                       saveToHistory();
                       setGradientType(e.target.value);
                     }}
-                    style={{
-                      width: '100%',
-                      padding: '8px',
-                      background: 'rgba(255,165,0,0.1)',
-                      border: '1px solid rgba(255,165,0,0.3)',
-                      borderRadius: '4px',
-                      color: 'white',
-                      fontSize: '10px',
-                      letterSpacing: '1px',
-                      cursor: 'pointer',
-                      marginBottom: '8px'
-                    }}
+                    className="w-full p-2.5 md:p-3 bg-orange-500/10 border border-orange-500/30 rounded text-white text-xs md:text-[10px] tracking-wide cursor-pointer mb-2 focus:outline-none focus:ring-2 focus:ring-orange-500/50"
                   >
                     <option value="solid">SOLID</option>
                     <option value="radial">RADIAL</option>
@@ -1927,26 +1779,15 @@ export default function Home() {
                       value={backgroundColor2}
                       onChange={(e) => setBackgroundColor2(e.target.value)}
                       onBlur={saveToHistory}
-                      style={{ 
-                        width: '100%', 
-                        height: '35px',
-                        border: '1px solid rgba(255,165,0,0.3)',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
+                      className="w-full h-10 md:h-12 border border-orange-500/30 rounded cursor-pointer"
                     />
                   )}
                 </div>
               )}
 
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  fontSize: '11px', 
-                  letterSpacing: '1px',
-                  marginBottom: '8px',
-                  opacity: 0.6
-                }}>
+              {/* Shape Type */}
+              <div className="mb-4">
+                <label className="block text-xs md:text-[11px] tracking-wide mb-2 opacity-60">
                   DESERT SHAPE
                 </label>
                 <select
@@ -1955,17 +1796,7 @@ export default function Home() {
                     saveToHistory();
                     setShapeType(e.target.value);
                   }}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: 'rgba(255,165,0,0.1)',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '11px',
-                    letterSpacing: '1px',
-                    cursor: 'pointer'
-                  }}
+                  className="w-full p-2.5 md:p-3 bg-orange-500/10 border border-orange-500/30 rounded text-white text-xs md:text-[11px] tracking-wide cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500/50"
                 >
                   <option value="saguaro">SAGUARO CACTUS</option>
                   <option value="prickly-pear">PRICKLY PEAR</option>
@@ -1986,50 +1817,21 @@ export default function Home() {
                 </select>
               </div>
 
+              {/* Randomize Button */}
               <button
                 onClick={randomizeDesign}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'linear-gradient(135deg, #ffa500 0%, #ff6b35 100%)',
-                  border: 'none',
-                  borderRadius: '4px',
-                  color: 'white',
-                  fontSize: '11px',
-                  letterSpacing: '2px',
-                  cursor: 'pointer',
-                  marginBottom: '15px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  fontWeight: 'bold'
-                }}
+                className="w-full p-3 md:p-4 bg-gradient-to-r from-orange-500 to-orange-600 rounded text-white text-xs md:text-[11px] tracking-widest font-bold mb-4 flex items-center justify-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-all"
               >
                 <Sparkles size={16} />
                 RANDOMIZE
               </button>
 
-              <div>
+              {/* Action Buttons */}
+              <div className="space-y-2">
                 <button
                   onClick={captureDesign}
                   disabled={isCapturing}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    background: isCapturing ? '#ffa500' : 'rgba(255,165,0,0.1)',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    color: 'white',
-                    fontSize: '11px',
-                    letterSpacing: '2px',
-                    cursor: isCapturing ? 'default' : 'pointer',
-                    marginBottom: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
-                  }}
+                  className={`w-full p-3 md:p-4 ${isCapturing ? 'bg-orange-500' : 'bg-orange-500/10'} border border-orange-500/30 rounded text-white text-xs md:text-[11px] tracking-widest flex items-center justify-center gap-2 hover:bg-orange-500/20 transition-all`}
                 >
                   <Camera size={16} />
                   {isCapturing ? 'CAPTURED!' : 'CAPTURE DESIGN'}
@@ -2039,22 +1841,7 @@ export default function Home() {
                   <>
                     <button
                       onClick={downloadImage}
-                      style={{
-                        width: '100%',
-                        padding: '12px',
-                        background: 'rgba(255,165,0,0.1)',
-                        border: '1px solid rgba(255,165,0,0.3)',
-                        borderRadius: '4px',
-                        color: 'white',
-                        fontSize: '11px',
-                        letterSpacing: '2px',
-                        cursor: 'pointer',
-                        marginBottom: '10px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
+                      className="w-full p-3 md:p-4 bg-orange-500/10 border border-orange-500/30 rounded text-white text-xs md:text-[11px] tracking-widest flex items-center justify-center gap-2 hover:bg-orange-500/20 transition-all"
                     >
                       <Download size={16} />
                       DOWNLOAD IMAGE
@@ -2063,32 +1850,17 @@ export default function Home() {
                     <button
                       onClick={handleMint}
                       disabled={isMinting || !address || mintSuccess || !isCorrectChain}
-                      style={{
-                        width: '100%',
-                        padding: '15px',
-                        background: mintSuccess 
-                          ? 'rgba(255, 165, 0, 0.2)' 
+                      className={`w-full p-4 md:p-5 ${
+                        mintSuccess 
+                          ? 'bg-orange-500/20' 
                           : (isMinting || !address || !isCorrectChain)
-                          ? 'rgba(100,100,100,0.3)'
-                          : 'linear-gradient(135deg, #ffa500 0%, #ff6b35 100%)',
-                        border: 'none',
-                        borderRadius: '4px',
-                        color: 'white',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
-                        letterSpacing: '2px',
-                        cursor: (isMinting || !address || mintSuccess || !isCorrectChain) ? 'not-allowed' : 'pointer',
-                        marginBottom: '10px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        opacity: (isMinting || !address || !isCorrectChain) ? 0.5 : 1
-                      }}
+                          ? 'bg-gray-700/30'
+                          : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
+                      } rounded text-white text-xs md:text-sm font-bold tracking-widest flex items-center justify-center gap-2 transition-all ${(isMinting || !address || mintSuccess || !isCorrectChain) ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {isMinting ? (
                         <>
-                          <Loader size={16} className="spin" />
+                          <Loader size={16} className="animate-spin" />
                           MINTING...
                         </>
                       ) : mintSuccess ? (
@@ -2116,17 +1888,7 @@ export default function Home() {
 
                     <button
                       onClick={resetDesign}
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        background: 'transparent',
-                        border: '1px solid rgba(255,165,0,0.2)',
-                        borderRadius: '4px',
-                        color: 'rgba(255,165,0,0.5)',
-                        fontSize: '10px',
-                        letterSpacing: '2px',
-                        cursor: 'pointer'
-                      }}
+                      className="w-full p-2.5 md:p-3 bg-transparent border border-orange-500/20 rounded text-orange-500/50 text-[10px] md:text-xs tracking-widest hover:bg-orange-500/5 transition-all"
                     >
                       RESET
                     </button>
@@ -2135,14 +1897,10 @@ export default function Home() {
               </div>
             </div>
 
-            <div>
-              <div style={{ 
-                background: 'rgba(255,165,0,0.05)',
-                border: '1px solid rgba(255,165,0,0.2)',
-                borderRadius: '8px',
-                padding: '15px',
-                marginBottom: '15px'
-              }}>
+            {/* Canvas & Advanced Settings */}
+            <div className="order-1 lg:order-2 space-y-4">
+              {/* Canvas */}
+              <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4">
                 <canvas
                   ref={canvasRef}
                   onMouseDown={handleMouseDown}
@@ -2175,54 +1933,19 @@ export default function Home() {
                     });
                   }}
                   onTouchEnd={() => setIsDrawing(false)}
-                  style={{
-                    width: '100%',
-                    maxWidth: '600px',
-                    height: 'auto',
-                    aspectRatio: '1/1',
-                    border: '1px solid rgba(255,165,0,0.3)',
-                    borderRadius: '4px',
-                    cursor: 'crosshair',
-                    display: 'block',
-                    margin: '0 auto',
-                    touchAction: 'none'
-                  }}
+                  className="w-full max-w-full md:max-w-2xl h-auto aspect-square border border-orange-500/30 rounded cursor-crosshair mx-auto block touch-none"
                 />
               </div>
 
-              <div style={{ 
-                background: 'rgba(255,165,0,0.05)',
-                border: '1px solid rgba(255,165,0,0.2)',
-                borderRadius: '8px',
-                padding: '15px',
-                marginBottom: '15px'
-              }}>
-                <h3 style={{ 
-                  fontSize: '12px', 
-                  letterSpacing: '2px',
-                  marginBottom: '15px',
-                  opacity: 0.7,
-                  margin: '0 0 15px 0',
-                  color: '#ffa500'
-                }}>
+              {/* Advanced Settings */}
+              <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4">
+                <h3 className="text-xs md:text-sm tracking-wider mb-4 opacity-70 text-orange-400">
                   ADVANCED SETTINGS
                 </h3>
 
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '15px',
-                  marginBottom: '15px'
-                }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                   <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
+                    <label className="flex justify-between text-[10px] md:text-[11px] tracking-wide mb-2 opacity-60">
                       <span>PARTICLES</span>
                       <span>{particleCount}</span>
                     </label>
@@ -2234,19 +1957,12 @@ export default function Home() {
                       onChange={(e) => setParticleCount(parseInt(e.target.value))}
                       onMouseUp={saveToHistory}
                       onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
+                      className="w-full accent-orange-500"
                     />
                   </div>
 
                   <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
+                    <label className="flex justify-between text-[10px] md:text-[11px] tracking-wide mb-2 opacity-60">
                       <span>TRAIL</span>
                       <span>{trailLength}</span>
                     </label>
@@ -2258,19 +1974,12 @@ export default function Home() {
                       onChange={(e) => setTrailLength(parseInt(e.target.value))}
                       onMouseUp={saveToHistory}
                       onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
+                      className="w-full accent-orange-500"
                     />
                   </div>
 
                   <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
+                    <label className="flex justify-between text-[10px] md:text-[11px] tracking-wide mb-2 opacity-60">
                       <span>GLOW</span>
                       <span>{glowIntensity.toFixed(1)}</span>
                     </label>
@@ -2283,25 +1992,12 @@ export default function Home() {
                       onChange={(e) => setGlowIntensity(parseFloat(e.target.value))}
                       onMouseUp={saveToHistory}
                       onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
+                      className="w-full accent-orange-500"
                     />
                   </div>
-                </div>
 
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '15px'
-                }}>
                   <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
+                    <label className="flex justify-between text-[10px] md:text-[11px] tracking-wide mb-2 opacity-60">
                       <span>SIZE</span>
                       <span>{particleSize.toFixed(1)}</span>
                     </label>
@@ -2314,19 +2010,12 @@ export default function Home() {
                       onChange={(e) => setParticleSize(parseFloat(e.target.value))}
                       onMouseUp={saveToHistory}
                       onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
+                      className="w-full accent-orange-500"
                     />
                   </div>
 
                   <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
+                    <label className="flex justify-between text-[10px] md:text-[11px] tracking-wide mb-2 opacity-60">
                       <span>SPEED</span>
                       <span>{animationSpeed.toFixed(2)}</span>
                     </label>
@@ -2339,19 +2028,12 @@ export default function Home() {
                       onChange={(e) => setAnimationSpeed(parseFloat(e.target.value))}
                       onMouseUp={saveToHistory}
                       onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
+                      className="w-full accent-orange-500"
                     />
                   </div>
 
                   <div>
-                    <label style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      fontSize: '11px', 
-                      letterSpacing: '1px',
-                      marginBottom: '8px',
-                      opacity: 0.6
-                    }}>
+                    <label className="flex justify-between text-[10px] md:text-[11px] tracking-wide mb-2 opacity-60">
                       <span>CONNECTIONS</span>
                       <span>{connectionDistance === 0 ? 'OFF' : connectionDistance}</span>
                     </label>
@@ -2364,46 +2046,24 @@ export default function Home() {
                       onChange={(e) => setConnectionDistance(parseInt(e.target.value))}
                       onMouseUp={saveToHistory}
                       onTouchEnd={saveToHistory}
-                      style={{ width: '100%' }}
+                      className="w-full accent-orange-500"
                     />
                   </div>
                 </div>
               </div>
 
+              {/* Preview Snapshot */}
               {capturedImage && (
-                <div style={{ 
-                  background: 'rgba(255,165,0,0.05)',
-                  border: '1px solid rgba(255,165,0,0.2)',
-                  borderRadius: '8px',
-                  padding: '15px'
-                }}>
-                  <h3 style={{ 
-                    fontSize: '12px', 
-                    letterSpacing: '2px',
-                    marginBottom: '15px',
-                    opacity: 0.7,
-                    margin: '0 0 15px 0',
-                    color: '#ffa500'
-                  }}>
+                <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4">
+                  <h3 className="text-xs md:text-sm tracking-wider mb-4 opacity-70 text-orange-400">
                     {mintSuccess ? '🌵 DESERT NFT MINTED 🌵' : 'PREVIEW SNAPSHOT'}
                   </h3>
                   <img 
                     src={capturedImage} 
                     alt="Captured Desert Design"
-                    style={{ 
-                      width: '100%',
-                      maxWidth: '400px',
-                      border: '1px solid rgba(255,165,0,0.3)',
-                      borderRadius: '4px'
-                    }}
+                    className="w-full max-w-md border border-orange-500/30 rounded mx-auto"
                   />
-                  <p style={{ 
-                    marginTop: '15px',
-                    fontSize: '11px',
-                    opacity: 0.6,
-                    lineHeight: '1.6',
-                    margin: '15px 0 0 0'
-                  }}>
+                  <p className="mt-4 text-xs md:text-[11px] opacity-60 leading-relaxed text-center md:text-left">
                     {mintSuccess 
                       ? '🎉 Your interactive Marfa desert NFT has been minted!'
                       : '🌵 When you mint, the NFT will be FULLY INTERACTIVE!'
@@ -2415,69 +2075,27 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          zIndex: 9999,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          maxWidth: '400px'
-        }}>
+        {/* Toast Notifications */}
+        <div className="fixed top-4 right-4 left-4 md:left-auto z-50 flex flex-col gap-3 max-w-md md:max-w-sm">
           {toasts.map(toast => (
             <div
               key={toast.id}
-              style={{
-                background: toast.type === 'success' 
-                  ? 'linear-gradient(135deg, #ffa500 0%, #ff6b35 100%)'
+              className={`${
+                toast.type === 'success' 
+                  ? 'bg-gradient-to-r from-orange-500 to-orange-600'
                   : toast.type === 'error'
-                  ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-                  : 'linear-gradient(135deg, #ffa500 0%, #d4a574 100%)',
-                border: '1px solid rgba(255,165,0,0.3)',
-                borderRadius: '8px',
-                padding: '16px 20px',
-                color: 'white',
-                fontSize: '13px',
-                fontWeight: '500',
-                letterSpacing: '0.5px',
-                boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
-                animation: 'slideIn 0.3s ease-out',
-                backdropFilter: 'blur(10px)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}
+                  ? 'bg-gradient-to-r from-red-500 to-red-600'
+                  : 'bg-gradient-to-r from-orange-500 to-orange-400'
+              } border border-orange-500/30 rounded-lg p-4 text-white text-xs md:text-sm font-medium tracking-wide shadow-2xl backdrop-blur-lg flex items-center gap-3 animate-[slideIn_0.3s_ease-out]`}
             >
-              <span style={{ fontSize: '18px' }}>
+              <span className="text-lg md:text-xl">
                 {toast.type === 'success' ? '🌵' : toast.type === 'error' ? '✕' : 'ⓘ'}
               </span>
-              <span>{toast.message}</span>
+              <span className="flex-1">{toast.message}</span>
             </div>
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .spin {
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes slideIn {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </>
   );
 }
